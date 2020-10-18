@@ -34,7 +34,7 @@ export class TOKEN {
       return Token;
    }   
 
-   static killToken(header: string): void {
+   private static killToken(header: string): void {
       const [ username, password ] = header.split(":");
       Mongo.client.db("Mordor").collection("tokens").updateOne({ username: username }, { $set: { Token: null } }, { upsert: true });
    }
@@ -61,5 +61,11 @@ export class TOKEN {
 
          await promise;
       })();
+   }
+
+   static async findToken(header: string): Promise<void> {
+      const [ username, password ] = header.split(":");
+      let tokenObject: Token | null = await Mongo.client.db("Mordor").collection("tokens").findOne({ username: username });
+      console.log(tokenObject?.Token);
    }
 }

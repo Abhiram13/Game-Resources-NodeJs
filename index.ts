@@ -22,10 +22,6 @@ export class Mongo {
 
 app.get("/", function(req: e.Request, res: e.Response) {   
    if (Authorisation.Headers(req.headers.authorization!)) {
-      // Item.FetchAll()
-      //    .then((response: Items[] | null) => {
-      //       res.status(200).send({RESPONSE: response, TOKEN: TOKEN.generate().then(token => {return token})});
-      //    });
       TOKEN.generate(req.headers.authorization!);
       res.send("OK");
    } else {
@@ -33,14 +29,9 @@ app.get("/", function(req: e.Request, res: e.Response) {
    }  
 });
 
-app.get("/kill", function(req: e.Request, res: e.Response) {
-   if (Authorisation.Headers(req.headers.authorization!)) {
-      // Item.FetchAll()
-      //    .then((response: Items[] | null) => {
-      //       res.status(200).send({RESPONSE: response, TOKEN: TOKEN.generate().then(token => {return token})});
-      //    });
-      TOKEN.killToken(req.headers.authorization!);
-      res.send("OK");
+app.get("/second", function(req: e.Request, res: e.Response) {
+   if (Authorisation.Headers(req.headers.authorization!)) {      
+      res.send(TOKEN.findToken(req.headers.authorization!));
    } else {
       res.status(400).send("Bad Request");
    }
