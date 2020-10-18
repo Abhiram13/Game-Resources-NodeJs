@@ -32,26 +32,34 @@ export class TOKEN {
       const [ username, password ] = header.split(":");
       let Token: string = String.Encode(`${ username }_${ password }_${ new Date().getHours() }_${ new Date().getMinutes() }_${ new Date().getSeconds() }`);
       return Token;
-   }
-
-   static generate(header: string): void {
-      const [ username, password ] = header.split(":");  
-      let isTokenExit: Token | null = null;
-      
-      Mongo.client.db("Mordor").collection("tokens").findOne({ username: 'abhi' })
-         .then(function(response: Token | null) {
-            isTokenExit = response;
-         });
-      
-      if (isTokenExit === null) {
-         Mongo.client.db("Mordor").collection("tokens").updateOne({ username: username, password: password }, { $set: { Token: this.create(header) } }, { upsert: true });
-      } else {
-         Mongo.client.db("Mordor").collection("tokens").insertOne({ username: username, password: password, Token: this.create(header) }); 
-      }
-   }
+   }   
 
    static killToken(header: string): void {
       const [ username, password ] = header.split(":");
       Mongo.client.db("Mordor").collection("tokens").updateOne({ username: username }, { $set: { Token: null } }, { upsert: true });
+   }
+
+   static generate(header: string): void {
+      const [ username, password ] = header.split(":");
+      let isTokenExit: Token | null = null;
+
+      Mongo.client.db("Mordor").collection("tokens").findOne({ username: 'abhi' })
+         .then(function(response: Token | null) {
+            isTokenExit = response;
+         });
+
+      if (isTokenExit === null) {
+         Mongo.client.db("Mordor").collection("tokens").updateOne({ username: username, password: password }, { $set: { Token: this.create(header) } }, { upsert: true });
+      } else {
+         Mongo.client.db("Mordor").collection("tokens").insertOne({ username: username, password: password, Token: this.create(header) });
+      }
+
+      (async () => {
+         let promise = new Promise((resolve, reject) => {
+            setTimeout(() => this.killToken(header), 20000);
+         });
+
+         await promise;
+      })();
    }
 }
