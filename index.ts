@@ -2,10 +2,12 @@ import { Application } from "express";
 import e from "express";
 import { Collection, Cursor, Db, MongoClient } from "mongodb";
 import { Authorisation } from './helpers/helper';
+import { Item } from './src/Items';
+import { Items } from "./typedef/types";
 
-const app: Application = e();
+export const app: Application = e();
 
-class Mongo {
+export class Mongo {
    static URI: string = "mongodb+srv://abhiramDB:abhiram13@myfirstdatabase.l8kvg.mongodb.net/Mordor?retryWrites=true&w=majority";
    static client: MongoClient = new MongoClient(Mongo.URI, { useUnifiedTopology: true });   
    static async Connect(): Promise<void> {
@@ -20,14 +22,16 @@ class Mongo {
 
 app.get("/", function(req: e.Request, res: e.Response) {   
    if (Authorisation.Headers(req.headers.authorization!)) {
-      res.status(200).send("Request OK");
+      Item.FetchAll()
+         .then((response: Items[] | null) => {
+            res.status(200).send(response);
+         });
    } else {
       res.status(400).send("Bad Request");
    }  
 });
 
 app.listen(1996, function() {
-   // Connects to MongoDB when starts listening
    Mongo.Connect();
    console.log('Example app listening on port 1996!');
 });
