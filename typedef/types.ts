@@ -9,3 +9,10 @@ export interface Items {
    rating: number,
    categoryLogo: string,
 }
+
+export interface Token {
+   _id: ObjectID,
+   username: string,
+   password: string,
+   Token: string | null,
+}
