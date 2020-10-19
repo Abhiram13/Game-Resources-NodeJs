@@ -5,14 +5,13 @@ import { Collection, Cursor, Db, MongoClient } from "mongodb";
 import { Items } from '../typedef/types';
 
 export class Item {
-   static async FetchAll(): Promise<Items[] | null> {
+   static FetchAll(request: e.Request, response: e.Response): void {
       try {
          let ItemsCollection: Cursor<Items> = Mongo.client.db("Mordor").collection<Items>("items").find({});
-         return await ItemsCollection.toArray();
+         response.status(200).send(ItemsCollection.toArray());
       } catch (e) {
          console.log(e);
+         response.status(500);
       }
-
-      return null;
    } 
 }

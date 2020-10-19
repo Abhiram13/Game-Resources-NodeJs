@@ -1,4 +1,4 @@
-import { Application } from "express";
+import { Application, NextFunction } from "express";
 import e from "express";
 import { Collection, Cursor, Db, MongoClient } from "mongodb";
 import { Authorisation, TOKEN } from './helpers/helper';
@@ -20,13 +20,19 @@ export class Mongo {
    }
 }
 
-app.get("/", function(req: e.Request, res: e.Response) {   
+app.all("/item/*", function(req: e.Request, res: e.Response, next: NextFunction) { 
    if (Authorisation.Headers(req.headers.authorization!)) {
       TOKEN.generate(req.headers.authorization!);
-      res.send("OK");
+      console.log("HIT");
+      next();
    } else {
-      res.status(400).send("Bad Request");
-   }  
+      res.status(401).send("UnAuthorised");
+      res.end();
+   }
+});
+
+app.get("/", function(req: e.Request, res: e.Response) {   
+   res.send("Sent Data");
 });
 
 app.get("/second", function(req: e.Request, res: e.Response) {
@@ -36,6 +42,8 @@ app.get("/second", function(req: e.Request, res: e.Response) {
       res.status(400).send("Bad Request");
    }
 });
+
+app.get("/item/findall", (req: e.Request, res: e.Response) => Item.FetchAll(req, res));
 
 app.listen(1996, function() {
    Mongo.Connect();
