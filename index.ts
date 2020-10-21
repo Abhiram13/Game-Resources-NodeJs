@@ -44,6 +44,7 @@ app.get("/second", function(req: e.Request, res: e.Response) {
 });
 
 app.get("/item/findall", (req: e.Request, res: e.Response) => Item.FetchAll(req, res));
+app.get("/item/findone/:id", (req: e.Request, res: e.Response) => Item.FindById(req, res));
 
 app.listen(1996, function() {
    Mongo.Connect();

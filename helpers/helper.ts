@@ -18,7 +18,7 @@ export class String {
 export class Authorisation {
    static Headers(headers: string): boolean {
       try {
-         const [ username, password ] = headers.split(":");
+         const [ username, password ] = headers.split(":"); /////// ERRROOOORR
          if (username === "abhi" && password === "123") return true;
       } catch (e) {
          console.log(e);
