@@ -21,12 +21,10 @@ export class Item {
       try {
          console.log(request.params.id);
          await Mongo.client.db("Mordor").collection<Items>("items").findOne({ "_id": new ObjectID(request.params.id) }, function(err, result: Items) {
-            console.log(err);            
-            console.log(result);
-            if (result === null) {
-               response.status(500).end();
+            if (err) {
+               response.status(500).send(err).end();
             } else {
-               response.status(200).end();
+               response.status(200).send(result);
             }
          });
       } catch (e) {

@@ -20,6 +20,9 @@ export class Mongo {
    }
 }
 
+
+// All Routes including /item/ will be needed authorisation
+// Once approved, the function will trigger next() method 
 app.all("/item/*", function(req: e.Request, res: e.Response, next: NextFunction) { 
    if (Authorisation.Headers(req.headers.authorization!)) {
       TOKEN.generate(req.headers.authorization!);
