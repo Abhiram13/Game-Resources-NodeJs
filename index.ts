@@ -1,12 +1,12 @@
 import { Application, NextFunction } from "express";
 import e from "express";
+import bodyparser from "body-parser";
 import { Collection, Cursor, Db, MongoClient } from "mongodb";
 import { Authorisation, TOKEN } from './helpers/helper';
 import { Item } from './src/Items';
 import { Items } from "./typedef/types";
 
 export const app: Application = e();
-
 export class Mongo {
    static URI: string = "mongodb+srv://abhiramDB:abhiram13@myfirstdatabase.l8kvg.mongodb.net/Mordor?retryWrites=true&w=majority";
    static client: MongoClient = new MongoClient(Mongo.URI, { useUnifiedTopology: true });   
@@ -20,6 +20,8 @@ export class Mongo {
    }
 }
 
+app.use(bodyparser.urlencoded({ extended: true }));
+app.use(bodyparser.json());
 
 // All Routes including /item/ will be needed authorisation
 // Once approved, the function will trigger next() method 
@@ -48,6 +50,7 @@ app.get("/second", function(req: e.Request, res: e.Response) {
 
 app.get("/item/findall", (req: e.Request, res: e.Response) => Item.FetchAll(req, res));
 app.get("/item/findone/:id", (req: e.Request, res: e.Response) => Item.FindById(req, res));
+app.post("/item/search", (req: e.Request, res: e.Response) => Item.Search(req, res));
 
 app.listen(1996, function() {
    Mongo.Connect();
