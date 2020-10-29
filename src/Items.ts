@@ -41,8 +41,6 @@ export class Item {
                }
             }
 
-            console.log(array.length);
-
             if (array.length > 0) {
                response.status(200).send(array);
             } else {
@@ -50,7 +48,7 @@ export class Item {
             }
          });
       } catch (e) {
-         //
+         response.status(500).send(e).end();
       }
    }
 }

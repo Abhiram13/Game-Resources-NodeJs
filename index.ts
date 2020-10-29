@@ -1,10 +1,10 @@
 import { Application, NextFunction } from "express";
 import e from "express";
 import bodyparser from "body-parser";
-import { Collection, Cursor, Db, MongoClient } from "mongodb";
+import { MongoClient } from "mongodb";
 import { Authorisation, TOKEN } from './helpers/helper';
 import { Item } from './src/Items';
-import { Items } from "./typedef/types";
+import { Users } from './src/Users';
 
 export const app: Application = e();
 export class Mongo {
@@ -51,6 +51,7 @@ app.get("/second", function(req: e.Request, res: e.Response) {
 app.get("/item/findall", (req: e.Request, res: e.Response) => Item.FetchAll(req, res));
 app.get("/item/findone/:id", (req: e.Request, res: e.Response) => Item.FindById(req, res));
 app.post("/item/search", (req: e.Request, res: e.Response) => Item.Search(req, res));
+app.post("/users/login", (req: e.Request, res: e.Response) => Users.Login(req, res));
 
 app.listen(1996, function() {
    Mongo.Connect();

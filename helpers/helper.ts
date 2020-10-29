@@ -18,7 +18,7 @@ export class String {
 export class Authorisation {
    static Headers(headers: string): boolean {
       try {
-         const [ username, password ] = headers.split(":"); /////// ERRROOOORR
+         const [username, password] = headers.split(":"); /////// ERRROOOORR
          if (username === "abhi" && password === "123") return true;
       } catch (e) {
          console.log(e);
@@ -29,25 +29,27 @@ export class Authorisation {
 
 export class TOKEN {
    private static create(header: string): string {
-      const [ username, password ] = header.split(":");
-      let Token: string = String.Encode(`${ username }_${ password }_${ new Date().getHours() }_${ new Date().getMinutes() }_${ new Date().getSeconds() }`);
+      const [username, password] = header.split(":");
+      let Token: string = String.Encode(`${username}_${password}_${new Date().getHours()}_${new Date().getMinutes()}_${new Date().getSeconds()}`);
       return Token;
-   }   
+   }
 
    private static killToken(header: string): void {
-      const [ username, password ] = header.split(":");
+      const [username, password] = header.split(":");
       Mongo.client.db("Mordor").collection("tokens").updateOne({ username: username }, { $set: { Token: null } }, { upsert: true });
    }
 
    static generate(header: string): void {
-      const [ username, password ] = header.split(":");
+      const [username, password] = header.split(":");
       let isTokenExit: Token | null = null;
 
-      Mongo.client.db("Mordor").collection("tokens").findOne({ username: 'abhi' })
+      Mongo.client.db("Mordor").collection("tokens").findOne({ username: username })
          .then(function(response: Token | null) {
             isTokenExit = response;
          });
 
+      // if Token is null, then the token will be updated with new value
+      // else, new token will be created
       if (isTokenExit === null) {
          Mongo.client.db("Mordor").collection("tokens").updateOne({ username: username, password: password }, { $set: { Token: this.create(header) } }, { upsert: true });
       } else {
@@ -63,9 +65,9 @@ export class TOKEN {
       })();
    }
 
-   static async findToken(header: string): Promise<void> {
-      const [ username, password ] = header.split(":");
+   static async findToken(header: string): Promise<string | null | undefined> {
+      const [username, password] = header.split(":");
       let tokenObject: Token | null = await Mongo.client.db("Mordor").collection("tokens").findOne({ username: username });
-      console.log(tokenObject?.Token);
+      return tokenObject?.Token;
    }
 }

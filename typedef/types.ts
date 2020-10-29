@@ -16,3 +16,16 @@ export interface Token {
    password: string,
    Token: string | null,
 }
+
+export interface NewUser {
+   username: string,
+   password: string,
+   firstname: string,
+   lastname: string,
+   isAdmin: boolean,
+}
+
+export interface User extends NewUser {
+   _id: ObjectID,
+   __v: number,
+}
