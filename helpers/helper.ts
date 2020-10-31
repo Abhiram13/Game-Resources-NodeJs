@@ -27,7 +27,10 @@ export class Authorisation {
    }
 
    static async Token(token: string | string[] | undefined): Promise<boolean> {
+      if (token === undefined || token === null) return false;
+
       let document = await Mongo.client.db("Mordor").collection("tokens").findOne({ "Token": token });
+      
       if (document !== null && document !== undefined && Object.keys(document).length > 0) {
          return true;
       }
@@ -67,7 +70,7 @@ export class TOKEN {
 
       (async () => {
          let promise = new Promise((resolve, reject) => {
-            setTimeout(() => this.killToken(header), 120000);
+            setTimeout(() => this.killToken(header), 60000);
          });
 
          await promise;
