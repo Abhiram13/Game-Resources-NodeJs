@@ -25,27 +25,16 @@ app.use(bodyparser.json());
 
 // All Routes including /item/ will be needed authorisation
 // Once approved, the function will trigger next() method 
-app.all("/item/*", function(req: e.Request, res: e.Response, next: NextFunction) { 
-   if (Authorisation.Headers(req.headers.authorization!)) {
-      TOKEN.generate(req.headers.authorization!);
-      console.log("HIT");
+app.all("/item/*", async function(req: e.Request, res: e.Response, next: NextFunction) {
+   if (await Authorisation.Token(req.headers.token!)) {
       next();
    } else {
-      res.status(401).send("UnAuthorised");
-      res.end();
+      res.status(401).send("UnAuthorised").end();
    }
 });
 
 app.get("/", function(req: e.Request, res: e.Response) {   
    res.send("Sent Data");
-});
-
-app.get("/second", function(req: e.Request, res: e.Response) {
-   if (Authorisation.Headers(req.headers.authorization!)) {      
-      res.send(TOKEN.findToken(req.headers.authorization!));
-   } else {
-      res.status(400).send("Bad Request");
-   }
 });
 
 app.get("/item/findall", (req: e.Request, res: e.Response) => Item.FetchAll(req, res));
