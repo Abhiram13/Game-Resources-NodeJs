@@ -25,7 +25,7 @@ app.use(bodyparser.json());
 
 // All Routes including /item/ will be needed authorisation
 // Once approved, the function will trigger next() method 
-app.all("/item/*", async function(req: e.Request, res: e.Response, next: NextFunction) {
+app.all(["/item/*", "/users/*"], async function(req: e.Request, res: e.Response, next: NextFunction) {
    if (await Authorisation.Token(req.headers.token!)) {
       next();
    } else {
@@ -40,7 +40,8 @@ app.get("/", function(req: e.Request, res: e.Response) {
 app.get("/item/findall", (req: e.Request, res: e.Response) => Item.FetchAll(req, res));
 app.get("/item/findone/:id", (req: e.Request, res: e.Response) => Item.FindById(req, res));
 app.post("/item/search", (req: e.Request, res: e.Response) => Item.Search(req, res));
-app.post("/users/login", (req: e.Request, res: e.Response) => Users.Login(req, res));
+app.post("/login", (req: e.Request, res: e.Response) => Users.Login(req, res));
+app.get("/users/findall", (req: e.Request, res: e.Response) => Users.FindAll(req, res));
 
 app.listen(1996, function() {
    Mongo.Connect();

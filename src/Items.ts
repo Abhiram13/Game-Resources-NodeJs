@@ -13,7 +13,7 @@ export class Item {
          });
       } catch (e) {
          console.log(e);
-         response.status(500);
+         response.status(500).send(e).end();
       }
    }
 
@@ -21,13 +21,14 @@ export class Item {
       try {
          await Mongo.client.db("Mordor").collection<Items>("items").findOne({"_id": new ObjectID(request.params.id)}, function(err, result: Items) {
             if (err) {
-               response.status(500).send(err).end();
+               throw err;
             } else {
                response.status(200).send(result);
             }
          });
       } catch (e) {
          console.log(e);
+         response.status(500).send(e).end();
       }
    }
 
