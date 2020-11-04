@@ -2,7 +2,7 @@ import { Mongo, app } from '../index';
 import { Application } from "express";
 import e from "express";
 import { User, NewUser } from '../typedef/types';
-import { Collection } from 'mongodb';
+import { Collection, Cursor } from 'mongodb';
 import { json } from 'body-parser';
 import { TOKEN } from '../helpers/helper';
 
@@ -22,7 +22,16 @@ export class Users {
       } catch (e) {
          console.log(e);
          response.status(500).send(e).end();
-      } 
+      }
+   }
+
+   static async FindAll(request: e.Request, response: e.Response): Promise<void> {
+      try {
+         let users: Cursor<User> = await Mongo.client.db("Mordor").collection<User>("users").find({});
+         response.send(users.toArray()).status(200).end();
+      } catch (error) {
+         response.status(500).send(error).end();
+      }
    }
 
    static SignUp(request: e.Request, response: e.Response): void {
@@ -35,10 +44,10 @@ export class Users {
                lastname: request.body.lastname,
                password: request.body.password,
                isAdmin: request.body.isAdmin,
-            }
+            };
          });
       } catch (e) {
-         console.log(e);  
+         console.log(e);
          response.status(500).send(e).end();
       }
    }
