@@ -39,7 +39,7 @@ app.get("/", function(req: e.Request, res: e.Response) {
 });
 
 app.get("/item/findall", (req: e.Request, res: e.Response) => Database<Items, string>("items", "").FindAll(req, res));
-app.get("/item/findone/:id", (req: e.Request, res: e.Response) => Database<Items, any>("items", { "_id": new ObjectID(req.params.id) }).FindById(req, res));
+app.get("/item/findone/:id", (req: e.Request, res: e.Response) => Database<Items, { _id: ObjectID }>("items", { "_id": new ObjectID(req.params.id) }).FindById(req, res));
 app.post("/item/search", (req: e.Request, res: e.Response) => Item.Search(req, res));
 app.post("/login", (req: e.Request, res: e.Response) => Users.Login(req, res));
 app.get("/users/findall", (req: e.Request, res: e.Response) => Users.FindAll(req, res));
