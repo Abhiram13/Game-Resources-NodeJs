@@ -1,7 +1,7 @@
 import { Mongo } from "..";
-import { Token } from '../typedef/types';
+import { Token, DataB } from '../typedef/types';
 import e from "express";
-import { Cursor } from "mongodb";
+import { Collection, Cursor, Db } from "mongodb";
 
 export class String {
    static Encode(string: string): string {
@@ -82,36 +82,30 @@ export class TOKEN {
    }
 }
 
-export class DataBase<T, O> {
-   collection: string;
-   options: O;
+export function Database<T, O>(collection: string, options: O): DataB {
+   let database: Collection<T> = Mongo.client.db("Mordor").collection<T>(collection);
 
-   constructor(collection: string, options: O) {
-      this.collection = collection;
-      this.options = options;
-   }
+   return {
+      FindAll: async function(request, response) {
+         try {
+            await database.find({}).toArray().then(function(item: T[]) {
+               response.status(200).send(item);
+            });
+         } catch (e) {
+            console.log(e);
+            response.status(500).send(e).end();
+         }   
+      },
 
-   async FindAll(request: e.Request, response: e.Response): Promise<void> {
-      try {
-         let collection: Cursor<T> = await Mongo.client.db("Mordor").collection<T>(this.collection).find({});
-         collection.toArray().then(function(item: T[]) {
-            response.status(200).send(item);
-         });
-      } catch (e) {
-         console.log(e);
-         response.status(500).send(e).end();
+      FindById: async function(request, response) {
+         try {
+            await database.findOne(options).then(function(item) {
+               response.send(item).status(200);
+            });
+         } catch (e) {
+            console.log(e);
+            response.status(500).send(e).end();
+         }
       }
    }
-
-   async FindById(request: e.Request, response: e.Response): Promise<void> {
-      try {
-         let collection: Cursor<T> | null = await Mongo.client.db("Mordor").collection<T>(this.collection).findOne(this.options);
-         collection?.toArray().then(function(item: T[]) {
-            response.status(200).send(item);
-         });
-      } catch (e) {
-         console.log(e);
-         response.status(500).send(e).end();
-      }
-   }
-}
+} 

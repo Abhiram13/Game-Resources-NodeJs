@@ -5,21 +5,6 @@ import {Collection, Cursor, Db, MongoClient, ObjectID} from "mongodb";
 import {Items} from '../typedef/types';
 
 export class Item {
-   static async FindById(request: e.Request, response: e.Response): Promise<void> {
-      try {
-         await Mongo.client.db("Mordor").collection<Items>("items").findOne({"_id": new ObjectID(request.params.id)}, function(err, result: Items) {
-            if (err) {
-               throw err;
-            } else {
-               response.status(200).send(result);
-            }
-         });
-      } catch (e) {
-         console.log(e);
-         response.status(500).send(e).end();
-      }
-   }
-
    static async Search(request: e.Request, response: e.Response): Promise<void> {
       try {
          await Mongo.client.db("Mordor").collection<Items>("items").find({}).toArray().then(function(items) {

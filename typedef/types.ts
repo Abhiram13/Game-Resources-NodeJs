@@ -1,4 +1,5 @@
 import { ObjectID } from "mongodb";
+import e from "express";
 
 export interface Items {
    _id: ObjectID | string,
@@ -28,4 +29,9 @@ export interface NewUser {
 export interface User extends NewUser {
    _id: ObjectID,
    __v: number,
+}
+
+export interface DataB {
+   FindAll: (request: e.Request, response: e.Response) => Promise<void>,
+   FindById: (request: e.Request, response: e.Response) => Promise<void>,
 }
