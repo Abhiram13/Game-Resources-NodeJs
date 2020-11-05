@@ -1,5 +1,7 @@
 import { Mongo } from "..";
 import { Token } from '../typedef/types';
+import e from "express";
+import { Cursor } from "mongodb";
 
 export class String {
    static Encode(string: string): string {
@@ -31,11 +33,7 @@ export class Authorisation {
 
       let document = await Mongo.client.db("Mordor").collection("tokens").findOne({ "Token": token });
       
-      if (document !== null && document !== undefined && Object.keys(document).length > 0) {
-         return true;
-      }
-
-      return false;
+      return (document && Object.keys(document).length > 0) ? true : false;
    }
 }
 
@@ -81,5 +79,39 @@ export class TOKEN {
       const [username, password] = header.split(":");
       let tokenObject: Token | null = await Mongo.client.db("Mordor").collection("tokens").findOne({ username: username });
       return tokenObject?.Token;
+   }
+}
+
+export class DataBase<T, O> {
+   collection: string;
+   options: O;
+
+   constructor(collection: string, options: O) {
+      this.collection = collection;
+      this.options = options;
+   }
+
+   async FindAll(request: e.Request, response: e.Response): Promise<void> {
+      try {
+         let collection: Cursor<T> = await Mongo.client.db("Mordor").collection<T>(this.collection).find({});
+         collection.toArray().then(function(item: T[]) {
+            response.status(200).send(item);
+         });
+      } catch (e) {
+         console.log(e);
+         response.status(500).send(e).end();
+      }
+   }
+
+   async FindById(request: e.Request, response: e.Response): Promise<void> {
+      try {
+         let collection: Cursor<T> | null = await Mongo.client.db("Mordor").collection<T>(this.collection).findOne(this.options);
+         collection?.toArray().then(function(item: T[]) {
+            response.status(200).send(item);
+         });
+      } catch (e) {
+         console.log(e);
+         response.status(500).send(e).end();
+      }
    }
 }

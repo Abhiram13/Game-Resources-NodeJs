@@ -2,9 +2,10 @@ import { Application, NextFunction } from "express";
 import e from "express";
 import bodyparser from "body-parser";
 import { MongoClient } from "mongodb";
-import { Authorisation, TOKEN } from './helpers/helper';
+import { Authorisation, TOKEN, DataBase } from './helpers/helper';
 import { Item } from './src/Items';
 import { Users } from './src/Users';
+import { Items } from "./typedef/types";
 
 export const app: Application = e();
 export class Mongo {
@@ -23,7 +24,7 @@ export class Mongo {
 app.use(bodyparser.urlencoded({ extended: true }));
 app.use(bodyparser.json());
 
-// All Routes including /item/ will be needed authorisation
+// All Routes including /item/, /users/ will be needed authorisation
 // Once approved, the function will trigger next() method 
 app.all(["/item/*", "/users/*"], async function(req: e.Request, res: e.Response, next: NextFunction) {
    if (await Authorisation.Token(req.headers.token!)) {
@@ -37,7 +38,8 @@ app.get("/", function(req: e.Request, res: e.Response) {
    res.send("Sent Data");
 });
 
-app.get("/item/findall", (req: e.Request, res: e.Response) => Item.FetchAll(req, res));
+// app.get("/item/findall", (req: e.Request, res: e.Response) => Item.FetchAll(req, res));
+app.get("/item/findall", (req: e.Request, res: e.Response) => new DataBase<Items, string>("items", "").FindAll(req, res));
 app.get("/item/findone/:id", (req: e.Request, res: e.Response) => Item.FindById(req, res));
 app.post("/item/search", (req: e.Request, res: e.Response) => Item.Search(req, res));
 app.post("/login", (req: e.Request, res: e.Response) => Users.Login(req, res));
