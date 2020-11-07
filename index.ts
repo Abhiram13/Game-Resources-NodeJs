@@ -5,7 +5,7 @@ import { MongoClient, ObjectID } from "mongodb";
 import { Authorisation, Database } from './helpers/helper';
 import { Item } from './src/Items';
 import { Users } from './src/Users';
-import { Items } from "./typedef/types";
+import { Items, User } from "./typedef/types";
 
 export const app: Application = e();
 export class Mongo {
@@ -38,11 +38,29 @@ app.get("/", function(req: e.Request, res: e.Response) {
    res.send("Sent Data");
 });
 
-app.get("/item/findall", (req: e.Request, res: e.Response) => Database<Items, string>("items", "").FindAll(req, res));
-app.get("/item/findone/:id", (req: e.Request, res: e.Response) => Database<Items, { _id: ObjectID }>("items", { "_id": new ObjectID(req.params.id) }).FindById(req, res));
-app.post("/item/search", (req: e.Request, res: e.Response) => Item.Search(req, res));
-app.post("/login", (req: e.Request, res: e.Response) => Users.Login(req, res));
-app.get("/users/findall", (req: e.Request, res: e.Response) => Users.FindAll(req, res));
+app.get("/item/findall", (req: e.Request, res: e.Response) => {
+   Database<Items, string>("items", "").FindAll(req, res);
+});
+
+app.get("/item/findone/:id", (req: e.Request, res: e.Response) => {
+   Database<Items, { _id: ObjectID; }>("items", { "_id": new ObjectID(req.params.id) }).FindById(req, res);
+});
+
+app.post("/item/search", (req: e.Request, res: e.Response) => {
+   Item.Search(req, res);
+});
+
+app.post("/login", (req: e.Request, res: e.Response) => {
+   Users.Login(req, res);
+});
+
+app.post("/signin", (req: e.Request, res: e.Response) => {
+   Users.SignUp(req, res);
+})
+
+app.get("/users/findall", (req: e.Request, res: e.Response) => {
+   Database<User, string>("users", "").FindAll(req, res);
+});
 
 app.listen(1996, function() {
    Mongo.Connect();

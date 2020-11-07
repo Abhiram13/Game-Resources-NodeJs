@@ -1,5 +1,5 @@
 import { Mongo } from "..";
-import { Token, DataB } from '../typedef/types';
+import { Token, DataB, Items, User } from '../typedef/types';
 import e from "express";
 import { Collection, Cursor, Db } from "mongodb";
 
@@ -32,7 +32,7 @@ export class Authorisation {
       if (token === undefined || token === null) return false;
 
       let document = await Mongo.client.db("Mordor").collection("tokens").findOne({ "Token": token });
-      
+
       return (document && Object.keys(document).length > 0) ? true : false;
    }
 }
@@ -94,7 +94,7 @@ export function Database<T, O>(collection: string, options: O): DataB {
          } catch (e) {
             console.log(e);
             response.status(500).send(e).end();
-         }   
+         }
       },
 
       FindById: async function(request, response) {
@@ -106,6 +106,6 @@ export function Database<T, O>(collection: string, options: O): DataB {
             console.log(e);
             response.status(500).send(e).end();
          }
-      }
-   }
+      },
+   };
 } 

@@ -25,26 +25,28 @@ export class Users {
       }
    }
 
-   static async FindAll(request: e.Request, response: e.Response): Promise<void> {
-      try {
-         let users: Cursor<User> = await Mongo.client.db("Mordor").collection<User>("users").find({});
-         response.send(users.toArray()).status(200).end();
-      } catch (error) {
-         response.status(500).send(error).end();
-      }
-   }
-
    static SignUp(request: e.Request, response: e.Response): void {
       try {
+         // Mongo.client.db("Mordor").collection("tokens").insertOne({ username: username, password: password, Token: this.create(header) });
          let collection: Collection<User> = Mongo.client.db("Mordor").collection<User>("users");
          collection.findOne({ "username": request.body.username }, function(err, doc) {
-            let obj: NewUser = {
-               username: request.body.username,
-               firstname: request.body.firstname,
-               lastname: request.body.lastname,
-               password: request.body.password,
-               isAdmin: request.body.isAdmin,
-            };
+
+            if (doc && Object.keys(doc).length > 0) {
+               response.status(302).send("User already exist").end();
+            } else if (!("firstname" in request.body) || !("lastname" in request.body) || !("password" in request.body) || !("isAdmin" in request.body)) {
+               response.status(400).send("Bad Request").end();
+            } else if (doc === null || doc === undefined) {
+               response.status(404).end();
+            }
+            console.log(doc);
+            console.log(err);
+            // let obj: NewUser = {
+            //    username: request.body.username,
+            //    firstname: request.body.firstname,
+            //    lastname: request.body.lastname,
+            //    password: request.body.password,
+            //    isAdmin: request.body.isAdmin,
+            // };
          });
       } catch (e) {
          console.log(e);
