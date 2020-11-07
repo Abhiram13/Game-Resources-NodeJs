@@ -36,17 +36,18 @@ export class Users {
             } else if (!("firstname" in request.body) || !("lastname" in request.body) || !("password" in request.body) || !("isAdmin" in request.body)) {
                response.status(400).send("Bad Request").end();
             } else if (doc === null || doc === undefined) {
-               response.status(404).end();
+               let obj: NewUser = {
+                  username: request.body.username,
+                  firstname: request.body.firstname,
+                  lastname: request.body.lastname,
+                  password: request.body.password,
+                  isAdmin: request.body.isAdmin,
+               };
+               collection.insertOne(obj);
+               response.status(200).end();
             }
             console.log(doc);
-            console.log(err);
-            // let obj: NewUser = {
-            //    username: request.body.username,
-            //    firstname: request.body.firstname,
-            //    lastname: request.body.lastname,
-            //    password: request.body.password,
-            //    isAdmin: request.body.isAdmin,
-            // };
+            console.log(err);            
          });
       } catch (e) {
          console.log(e);

@@ -27,8 +27,8 @@ export interface NewUser {
 }
 
 export interface User extends NewUser {
-   _id: ObjectID,
-   __v: number,
+   _id?: ObjectID,
+   __v?: number,
 }
 
 export interface DataB {
