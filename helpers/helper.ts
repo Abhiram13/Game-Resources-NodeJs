@@ -1,5 +1,5 @@
 import { Mongo } from "..";
-import { Token, IOperations, Items, User, IString } from '../typedef/types';
+import { Token, IOperations, Items, User, IString, Property } from '../typedef/types';
 import e from "express";
 import { Collection, Cursor, Db, ObjectId, ObjectID } from "mongodb";
 
@@ -110,7 +110,25 @@ export function Database<T, O>(collection: string, options: O): IOperations {
       },
 
       Search: async function(request, response) {
-         
+         try {
+            await database.find({}).toArray().then(function(items) {
+               let array: T[] = [];
+               for (var i: number = 0; i < items.length; i++) {
+                  let item: Property = items[i];
+                  if (item[options as unknown as string].substring(0, request.body.string.length).toUpperCase() === request.body.string.toUpperCase()) {
+                     array.push(items[i]);
+                  }
+               }
+
+               if (array.length > 0) {
+                  response.status(200).send(array);
+               } else {
+                  response.status(404).end();
+               }
+            });
+         } catch (e) {
+
+         }
       }
    };
 }

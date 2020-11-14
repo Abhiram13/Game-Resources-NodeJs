@@ -47,7 +47,8 @@ app.get("/item/findone/:id", (req: e.Request, res: e.Response) => {
 });
 
 app.post("/item/search", (req: e.Request, res: e.Response) => {
-   Item.Search(req, res);
+   // Item.Search(req, res);
+   Database<Items, string>("items", "itemName").Search(req, res);
 });
 
 app.post("/login", (req: e.Request, res: e.Response) => {

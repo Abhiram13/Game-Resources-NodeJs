@@ -12,6 +12,10 @@ export interface Items {
    [key: string]: string | number | ObjectID,
 }
 
+export interface Property {
+   [key: string]: any,
+}
+
 export interface Token {
    _id: ObjectID,
    username: string,
