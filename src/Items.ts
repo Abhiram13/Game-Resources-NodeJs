@@ -10,6 +10,7 @@ export class Item {
          await Mongo.client.db("Mordor").collection<Items>("items").find({}).toArray().then(function(items) {
             let array: Items[] = [];
             for (var i: number = 0; i < items.length; i++) {
+               let z: {[key: string]: string | number | ObjectID} = items[i];
                if (items[i].itemName.substring(0, request.body.string.length).toUpperCase() === request.body.string.toUpperCase()) {
                   array.push(items[i]);
                }
@@ -23,6 +24,28 @@ export class Item {
          });
       } catch (e) {
          response.status(500).send(e).end();
+      }
+   }
+
+   static async Update(request: e.Request, response: e.Response): Promise<void> {
+      try {
+         let obj = function() {
+            let x: {[key: string]: string} = {};
+
+            for (var key in request.body) {
+               x[key] = request.body[key]
+            }
+
+            return x;
+         }
+
+         console.log(obj());
+
+         await Mongo.client.db("Mordor").collection<Items>("items").updateOne({ _id: new ObjectID(request.params.id) }, { $set: obj() }, { upsert: true }, function(er, result) {
+            console.log(result);
+         });
+      } catch (e) {
+         //
       }
    }
 }

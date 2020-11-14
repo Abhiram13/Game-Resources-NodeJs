@@ -1,21 +1,22 @@
 import { Mongo } from "..";
-import { Token, DataB, Items, User } from '../typedef/types';
+import { Token, IOperations, Items, User, IString } from '../typedef/types';
 import e from "express";
-import { Collection, Cursor, Db } from "mongodb";
+import { Collection, Cursor, Db, ObjectId, ObjectID } from "mongodb";
 
-export class String {
-   static Encode(string: string): string {
-      let bufferObj: Buffer = Buffer.from(string, "utf8");
-      let base64String: string = bufferObj.toString("base64");
-      return base64String;
-   }
-
-   static Decode(string: string): string {
-      let buffer: Buffer = Buffer.from(string, "base64");
-      let decode: string = buffer.toString("utf8");
-      return decode;
-   }
-}
+export let string: IString = function(): IString {
+   return {
+      Encode: function(string) {
+         let bufferObj: Buffer = Buffer.from(string, "utf8");
+         let base64String: string = bufferObj.toString("base64");
+         return base64String;
+      },
+      Decode: function(string) {
+         let buffer: Buffer = Buffer.from(string, "base64");
+         let decode: string = buffer.toString("utf8");
+         return decode;
+      }
+   };
+}();
 
 export class Authorisation {
    static Headers(headers: string): boolean {
@@ -40,7 +41,7 @@ export class Authorisation {
 export class TOKEN {
    private static create(header: string): string {
       const [username, password] = header.split(":");
-      let Token: string = String.Encode(`${username}_${password}_${new Date().getHours()}_${new Date().getMinutes()}_${new Date().getSeconds()}`);
+      let Token: string = string.Encode(`${username}_${password}_${new Date().getHours()}_${new Date().getMinutes()}_${new Date().getSeconds()}`);
       return Token;
    }
 
@@ -82,7 +83,7 @@ export class TOKEN {
    }
 }
 
-export function Database<T, O>(collection: string, options: O): DataB {
+export function Database<T, O>(collection: string, options: O): IOperations {
    let database: Collection<T> = Mongo.client.db("Mordor").collection<T>(collection);
 
    return {
@@ -107,5 +108,9 @@ export function Database<T, O>(collection: string, options: O): DataB {
             response.status(500).send(e).end();
          }
       },
+
+      Search: async function(request, response) {
+         
+      }
    };
-} 
+}

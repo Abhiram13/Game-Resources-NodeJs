@@ -26,8 +26,7 @@ export class Users {
    }
 
    static SignUp(request: e.Request, response: e.Response): void {
-      try {
-         // Mongo.client.db("Mordor").collection("tokens").insertOne({ username: username, password: password, Token: this.create(header) });
+      try {         
          let collection: Collection<User> = Mongo.client.db("Mordor").collection<User>("users");
          collection.findOne({ "username": request.body.username }, function(err, doc) {
 
@@ -45,9 +44,7 @@ export class Users {
                };
                collection.insertOne(obj);
                response.status(200).end();
-            }
-            console.log(doc);
-            console.log(err);            
+            }        
          });
       } catch (e) {
          console.log(e);

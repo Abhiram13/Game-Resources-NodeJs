@@ -62,6 +62,10 @@ app.get("/users/findall", (req: e.Request, res: e.Response) => {
    Database<User, string>("users", "").FindAll(req, res);
 });
 
+// app.post("/update/:id", (request: e.Request, response: e.Response) => {
+//    Item.Update(request, response);
+// });
+
 app.listen(1996, function() {
    Mongo.Connect();
    console.log('Example app listening on port 1996!');
