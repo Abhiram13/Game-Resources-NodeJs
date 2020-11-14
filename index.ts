@@ -3,7 +3,6 @@ import e from "express";
 import bodyparser from "body-parser";
 import { MongoClient, ObjectID } from "mongodb";
 import { Authorisation, Database } from './helpers/helper';
-import { Item } from './src/Items';
 import { Users } from './src/Users';
 import { Items, User } from "./typedef/types";
 
@@ -24,8 +23,6 @@ export class Mongo {
 app.use(bodyparser.urlencoded({ extended: true }));
 app.use(bodyparser.json());
 
-// All Routes including /item/, /users/ will be needed authorisation
-// Once approved, the function will trigger next() method 
 app.all(["/item/*", "/users/*"], async function(req: e.Request, res: e.Response, next: NextFunction) {
    if (await Authorisation.Token(req.headers.token!)) {
       next();
