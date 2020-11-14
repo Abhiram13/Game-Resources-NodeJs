@@ -39,8 +39,6 @@ export class Item {
             return x;
          }
 
-         console.log(obj());
-
          await Mongo.client.db("Mordor").collection<Items>("items").updateOne({ _id: new ObjectID(request.params.id) }, { $set: obj() }, { upsert: true }, function(er, result) {
             console.log(result);
          });

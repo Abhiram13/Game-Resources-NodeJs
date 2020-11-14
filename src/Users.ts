@@ -10,17 +10,15 @@ export class Users {
    static Login(request: e.Request, response: e.Response): void {
       try {
          Mongo.client.db("Mordor").collection<User>("users").findOne({ "username": request.body.username }, async function(err, doc) {
-            if (err || Object.keys(doc).length === 0) {
+            if (err || doc === null || doc === undefined || Object.keys(doc).length === 0) {
                response.status(400).send({ "message": "No User Found" }).end();
             } else if (doc) {
-               TOKEN.generate(`${doc.username}:${doc.password}`);
-               let res = await TOKEN.findToken(`${doc.username}:${doc.password}`).then(resp => { return resp; });
-               console.log(res);
+               TOKEN(`${doc.username}:${doc.password}`).Generate();
+               let res = await TOKEN(`${doc.username}:${doc.password}`).FindToken().then(resp => { return resp; });
                response.status(200).send({ "user": doc, "token": res });
             }
          });
       } catch (e) {
-         console.log(e);
          response.status(500).send(e).end();
       }
    }
@@ -47,7 +45,6 @@ export class Users {
             }        
          });
       } catch (e) {
-         console.log(e);
          response.status(500).send(e).end();
       }
    }

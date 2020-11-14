@@ -12,10 +12,6 @@ export interface Items {
    [key: string]: string | number | ObjectID,
 }
 
-export interface Property {
-   [key: string]: any,
-}
-
 export interface Token {
    _id: ObjectID,
    username: string,
@@ -43,8 +39,8 @@ export interface IString {
 }
 
 export interface IToken {
-   Generate: (header: string) => void,
-   FindToken: (header: string) => Promise<string | null | undefined>,
+   Generate: () => void,
+   FindToken: () => Promise<string | null | undefined>,
 }
 
 export interface IOperations {

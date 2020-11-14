@@ -1,6 +1,6 @@
 import { Mongo } from "..";
-import { Token, IOperations, Items, User, IString, Property } from '../typedef/types';
-import e from "express";
+import { Token, IOperations, Items, User, IString, IToken } from '../typedef/types';
+import e, { response } from "express";
 import { Collection, Cursor, Db, ObjectId, ObjectID } from "mongodb";
 
 export let string: IString = function(): IString {
@@ -23,9 +23,7 @@ export class Authorisation {
       try {
          const [username, password] = headers.split(":"); /////// ERRROOOORR
          if (username === "abhi" && password === "123") return true;
-      } catch (e) {
-         console.log(e);
-      }
+      } catch (e) {}
       return false;
    }
 
@@ -38,48 +36,41 @@ export class Authorisation {
    }
 }
 
-export class TOKEN {
-   private static create(header: string): string {
-      const [username, password] = header.split(":");
-      let Token: string = string.Encode(`${username}_${password}_${new Date().getHours()}_${new Date().getMinutes()}_${new Date().getSeconds()}`);
-      return Token;
+export let TOKEN = function(header: string): IToken {
+   const [username, password] = header.split(":");
+   const collection: Collection<Token> = Mongo.client.db("Mordor").collection("tokens");
+
+   let create = function(): string {
+      let token: string = string.Encode(`${username}_${password}_${new Date().getHours()}_${new Date().getMinutes()}_${new Date().getSeconds()}`);
+      return token;
    }
 
-   private static killToken(header: string): void {
-      const [username, password] = header.split(":");
-      Mongo.client.db("Mordor").collection("tokens").updateOne({ username: username }, { $set: { Token: null } }, { upsert: true });
+   let killToken = function(): void {
+      collection.updateOne({ username: username }, { $set: { Token: null } }, { upsert: true });
    }
 
-   static generate(header: string): void {
-      const [username, password] = header.split(":");
-      let isTokenExit: Token | null = null;
+   return {
+      FindToken: async function(): Promise<string | null | undefined> {
+         let x: Token | null = await collection.findOne({ username: username });
+         return x?.Token;
+      },
+      Generate: function() {
+         let token: Token | null = null;
+         collection.findOne({ username: username }).then((response: Token | null) => { token = response });
 
-      Mongo.client.db("Mordor").collection("tokens").findOne({ username: username })
-         .then(function(response: Token | null) {
-            isTokenExit = response;
-         });
+         token
+            ? collection.insertOne({ username: username, password: password, Token: create() })
+            : collection.updateOne({ username: username, password: password }, { $set: { Token: create() } }, { upsert: true });        
+         
+         (async () => {
+            let promise = new Promise((resolve, reject) => {
+               setTimeout(() => killToken(), 60000);
+            });
 
-      // if Token is null, then the token will be updated with new value
-      // else, new token will be created
-      if (isTokenExit === null) {
-         Mongo.client.db("Mordor").collection("tokens").updateOne({ username: username, password: password }, { $set: { Token: this.create(header) } }, { upsert: true });
-      } else {
-         Mongo.client.db("Mordor").collection("tokens").insertOne({ username: username, password: password, Token: this.create(header) });
+            await promise;
+         })();
+            
       }
-
-      (async () => {
-         let promise = new Promise((resolve, reject) => {
-            setTimeout(() => this.killToken(header), 60000);
-         });
-
-         await promise;
-      })();
-   }
-
-   static async findToken(header: string): Promise<string | null | undefined> {
-      const [username, password] = header.split(":");
-      let tokenObject: Token | null = await Mongo.client.db("Mordor").collection("tokens").findOne({ username: username });
-      return tokenObject?.Token;
    }
 }
 
@@ -93,7 +84,6 @@ export function Database<T, O>(collection: string, options: O): IOperations {
                response.status(200).send(item);
             });
          } catch (e) {
-            console.log(e);
             response.status(500).send(e).end();
          }
       },
@@ -104,7 +94,6 @@ export function Database<T, O>(collection: string, options: O): IOperations {
                response.send(item).status(200);
             });
          } catch (e) {
-            console.log(e);
             response.status(500).send(e).end();
          }
       },
@@ -114,7 +103,7 @@ export function Database<T, O>(collection: string, options: O): IOperations {
             await database.find({}).toArray().then(function(items) {
                let array: T[] = [];
                for (var i: number = 0; i < items.length; i++) {
-                  let item: Property = items[i];
+                  let item: { [key: string]: any; } = items[i];
                   if (item[options as unknown as string].substring(0, request.body.string.length).toUpperCase() === request.body.string.toUpperCase()) {
                      array.push(items[i]);
                   }
