@@ -28,17 +28,15 @@ app.use(bodyparser.json());
 app.use(cors());
 
 app.all(["/item/*", "/users/*"], async function(req: e.Request, res: e.Response, next: NextFunction) {
-   if (await Authorisation.Token(req.headers.token!)) {
-      next();
-   } else {
-      res.status(401).send("UnAuthorised").end();
-   }
+   await Authorisation.Token(req.headers.token!)
+      ? next()
+      : res.status(401).send("UnAuthorised").end();
 });
 
 app.use('/item', itemRouter);
 app.use('/users', userRouter);
 
-app.get("/", function(req: e.Request, res: e.Response) {   
+app.get("/", function(req: e.Request, res: e.Response) {
    res.send("Sent Data");
 });
 
@@ -52,5 +50,5 @@ app.post("/signin", (req: e.Request, res: e.Response) => {
 
 app.listen(1996, function() {
    Mongo.Connect();
-   console.log('Example app listening on port 1996!');
+   console.log('App listening on port 1996!');
 });
