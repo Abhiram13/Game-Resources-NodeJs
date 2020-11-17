@@ -1,10 +1,11 @@
 import { Application, NextFunction } from "express";
 import e from "express";
 import bodyparser from "body-parser";
-import { MongoClient, ObjectID } from "mongodb";
-import { Authorisation, Database } from './helpers/helper';
+import { MongoClient } from "mongodb";
+import { Authorisation } from './helpers/helper';
 import { Users } from './src/Users';
-import { Items, User } from "./typedef/types";
+import userRouter from './routes/users';
+import itemRouter from './routes/items';
 
 const cors = require('cors');
 
@@ -34,20 +35,11 @@ app.all(["/item/*", "/users/*"], async function(req: e.Request, res: e.Response,
    }
 });
 
+app.use('/item', itemRouter);
+app.use('/users', userRouter);
+
 app.get("/", function(req: e.Request, res: e.Response) {   
    res.send("Sent Data");
-});
-
-app.get("/item/findall", (req: e.Request, res: e.Response) => {
-   Database<Items, string>("items", "").FindAll(req, res);
-});
-
-app.get("/item/findone/:id", (req: e.Request, res: e.Response) => {
-   Database<Items, { _id: ObjectID; }>("items", { "_id": new ObjectID(req.params.id) }).FindById(req, res);
-});
-
-app.post("/item/search", (req: e.Request, res: e.Response) => {
-   Database<Items, string>("items", "itemName").Search(req, res);
 });
 
 app.post("/login", (req: e.Request, res: e.Response) => {
@@ -56,15 +48,7 @@ app.post("/login", (req: e.Request, res: e.Response) => {
 
 app.post("/signin", (req: e.Request, res: e.Response) => {
    Users.SignUp(req, res);
-})
-
-app.get("/users/findall", (req: e.Request, res: e.Response) => {
-   Database<User, string>("users", "").FindAll(req, res);
 });
-
-// app.post("/update/:id", (request: e.Request, response: e.Response) => {
-//    Item.Update(request, response);
-// });
 
 app.listen(1996, function() {
    Mongo.Connect();
