@@ -6,6 +6,8 @@ import { Authorisation, Database } from './helpers/helper';
 import { Users } from './src/Users';
 import { Items, User } from "./typedef/types";
 
+const cors = require('cors');
+
 export const app: Application = e();
 export class Mongo {
    static URI: string = "mongodb+srv://abhiramDB:abhiram13@myfirstdatabase.l8kvg.mongodb.net/Mordor?retryWrites=true&w=majority";
@@ -22,6 +24,7 @@ export class Mongo {
 
 app.use(bodyparser.urlencoded({ extended: true }));
 app.use(bodyparser.json());
+app.use(cors());
 
 app.all(["/item/*", "/users/*"], async function(req: e.Request, res: e.Response, next: NextFunction) {
    if (await Authorisation.Token(req.headers.token!)) {
