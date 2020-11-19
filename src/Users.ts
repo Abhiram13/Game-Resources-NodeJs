@@ -48,4 +48,8 @@ export class Users {
          response.status(500).send(e).end();
       }
    }
+
+   static Like(): void {
+      
+   }
 }
