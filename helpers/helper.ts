@@ -3,7 +3,7 @@ import { Token, IOperations, Items, User, IString, IToken } from '../typedef/typ
 import e, { response } from "express";
 import { Collection, Cursor, Db, ObjectId, ObjectID } from "mongodb";
 
-export let string: IString = function(): IString {
+export let string = function(): IString {
    return {
       Encode: function(string) {
          let bufferObj: Buffer = Buffer.from(string, "utf8");
@@ -56,7 +56,7 @@ export let TOKEN = function(header: string): IToken {
          let x: Token | null = await collection.findOne({ username: username });
          return x?.Token;
       },
-      Generate: function() {
+      Generate: function(): void {
          let token: Token | null = null;
          collection.findOne({ username: username }).then((response: Token | null) => { token = response; });
 

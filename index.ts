@@ -6,12 +6,14 @@ import { Authorisation } from './helpers/helper';
 import { Users } from './src/Users';
 import userRouter from './routes/users';
 import itemRouter from './routes/items';
+import credentials from './config';
 
 const cors = require('cors');
+const { database, password, username } = credentials;
 
 export const app: Application = e();
 export class Mongo {
-   static URI: string = "mongodb+srv://abhiramDB:abhiram13@myfirstdatabase.l8kvg.mongodb.net/Mordor?retryWrites=true&w=majority";
+   static URI: string = `mongodb+srv://${username}:${password}@myfirstdatabase.l8kvg.mongodb.net/${database}?retryWrites=true&w=majority`;
    static client: MongoClient = new MongoClient(Mongo.URI, { useUnifiedTopology: true });   
    static async Connect(): Promise<void> {
       try {
