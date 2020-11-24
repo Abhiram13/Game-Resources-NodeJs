@@ -10,7 +10,7 @@ export class Authorisation {
    }
 
    static async Token(token: string | string[] | undefined): Promise<boolean> {
-      if (token === undefined || token === null) return false;
+      if (!token) return false;
 
       let document = await Mongo.client.db("Mordor").collection("tokens").findOne({ "Token": token });
 
