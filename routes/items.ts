@@ -18,12 +18,18 @@ itemRouter.get('/findone/:id', (req, res) => {
    Database<Items, ObjId>("items", obj).FindById(req, res);
 });
 
-itemRouter.post('/search', (req, res) => Database<Items, string>("items", "itemName").Search(req, res));
-
-itemRouter.get('/findall', async (req, res) => {
-   let items: Items[] = await Database<Items, string>("items", "").FindAll(req, res);
-   
+itemRouter.post('/search', async (req, res) => {
    try {
+      let items: Items[] = await Database<Items, string>("items", "itemName").Search(req, res);
+      new ServerResponse<Items[]>(items, res).Send();
+   } catch (e) {
+      new ServerResponse<any>(e, res).Send();
+   }
+});
+
+itemRouter.get('/findall', async (req, res) => {   
+   try {
+      let items: Items[] = await Database<Items, string>("items", "").FindAll(req, res);
       new ServerResponse<Items[]>(items, res).Send();
    } catch (e: any) {
       new ServerResponse<any>(e, res).Send();

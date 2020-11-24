@@ -46,5 +46,5 @@ export interface IToken {
 export interface IOperations<T> {
    FindAll: (request: e.Request, response: e.Response) => Promise<T[]>,
    FindById: (request: e.Request, response: e.Response) => Promise<void>,
-   Search: (request: e.Request, response: e.Response) => Promise<void>,
+   Search: (request: e.Request, response: e.Response) => Promise<T[]>,
 }
