@@ -2,18 +2,20 @@ import { Mongo } from "..";
 import { IOperations } from '../typedef/types';
 import { Collection } from "mongodb";
 
-export function Database<T, O>(collection: string, options: O): IOperations {
+export function Database<T, O>(collection: string, options: O): IOperations<T> {
    let database: Collection<T> = Mongo.client.db("Mordor").collection<T>(collection);
 
+   // try {
+   //    await database.find({}).toArray().then(function(item: T[]) {
+   //       response.status(200).send(item);
+   //    });
+   // } catch (e) {
+   //    response.status(500).send(e).end();
+   // }
+
    return {
-      FindAll: async function(request, response) {
-         try {
-            await database.find({}).toArray().then(function(item: T[]) {
-               response.status(200).send(item);
-            });
-         } catch (e) {
-            response.status(500).send(e).end();
-         }
+      FindAll: async function() {
+         return await database.find({}).toArray();
       },
 
       FindById: async function(request, response) {

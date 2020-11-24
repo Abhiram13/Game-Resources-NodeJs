@@ -43,8 +43,8 @@ export interface IToken {
    FindToken: () => Promise<string | null | undefined>,
 }
 
-export interface IOperations {
-   FindAll: (request: e.Request, response: e.Response) => Promise<void>,
+export interface IOperations<T> {
+   FindAll: (request: e.Request, response: e.Response) => Promise<T[]>,
    FindById: (request: e.Request, response: e.Response) => Promise<void>,
    Search: (request: e.Request, response: e.Response) => Promise<void>,
 }
