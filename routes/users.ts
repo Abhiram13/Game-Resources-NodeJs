@@ -1,5 +1,5 @@
 import express from "express";
-import { Database } from '../helpers/helper';
+import { Database } from '../methods/database';
 import { User } from '../typedef/types';
 
 const userRouter = express.Router();

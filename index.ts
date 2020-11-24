@@ -2,7 +2,7 @@ import { Application, NextFunction } from "express";
 import e from "express";
 import bodyparser from "body-parser";
 import { MongoClient } from "mongodb";
-import { Authorisation } from './helpers/helper';
+import { Authorisation } from './methods/auth';
 import { Users } from './src/Users';
 import userRouter from './routes/users';
 import itemRouter from './routes/items';

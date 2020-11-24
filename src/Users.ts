@@ -4,7 +4,7 @@ import e from "express";
 import { User, NewUser } from '../typedef/types';
 import { Collection, Cursor } from 'mongodb';
 import { json } from 'body-parser';
-import { TOKEN } from '../helpers/helper';
+import { TOKEN } from '../methods/token';
 
 export class Users {
    static Login(request: e.Request, response: e.Response): void {
