@@ -5,14 +5,6 @@ import { Collection } from "mongodb";
 export function Database<T, O>(collection: string, options: O): IOperations<T> {
    let database: Collection<T> = Mongo.client.db("Mordor").collection<T>(collection);
 
-   // try {
-   //    await database.findOne(options).then(function(item) {
-   //       response.send(item).status(200);
-   //    });
-   // } catch (e) {
-   //    response.status(500).send(e).end();
-   // }
-
    return {
       FindAll: async () => await database.find({}).toArray(),
 
