@@ -1,6 +1,6 @@
 import { Mongo } from "..";
 import { IOperations } from '../typedef/types';
-import { Collection } from "mongodb";
+import { Collection, ObjectID, UpdateWriteOpResult } from "mongodb";
 
 export function Database<T, O>(collection: string, options: O): IOperations<T> {
    let database: Collection<T> = Mongo.client.db("Mordor").collection<T>(collection);
@@ -28,6 +28,11 @@ export function Database<T, O>(collection: string, options: O): IOperations<T> {
          }
 
          return await database.find({}).toArray();
-      }
+      },
+
+      Update: async (query) => {
+         let updated: UpdateWriteOpResult = await database.updateOne(query, { $set: options }, { upsert: true });
+         return updated;
+      },
    };
 }

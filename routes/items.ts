@@ -37,4 +37,30 @@ itemRouter.get('/findall', async (req, res) => {
    }
 });
 
+interface Obj {
+   itemName: string,
+}
+
+interface Query {
+   _id: ObjectID,
+}
+
+itemRouter.post('/update', async (req, res) => {
+   try {
+      let id: Query = {
+         "_id": new ObjectID(req.body._id),
+      };
+
+      let name: Obj = {
+         itemName: "Blue Milk"
+      };
+
+      let count = await Database<Items, Obj>("items", name).Update<Query>(id);
+
+      new ServerResponse<number>(count.modifiedCount, res).Send();
+   } catch (e: any) {
+      new ServerResponse<any>(e, res).Send();
+   }
+});
+
 export default itemRouter;

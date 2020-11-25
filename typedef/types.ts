@@ -1,4 +1,4 @@
-import { ObjectID } from "mongodb";
+import { ObjectID, UpdateWriteOpResult } from "mongodb";
 import e from "express";
 
 export interface Items {
@@ -47,6 +47,7 @@ export interface IOperations<T> {
    FindAll: () => Promise<T[]>,
    FindById: () => Promise<T | null>,
    Search: (request: e.Request) => Promise<T[]>,
+   Update: <U>(query: U) => Promise<UpdateWriteOpResult>,
 }
 
 export type ObjId = {
