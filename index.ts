@@ -10,6 +10,7 @@ import credentials from './config';
 
 const cors = require('cors');
 const { database, password, username } = credentials;
+const port = process.env.PORT || 1996
 
 export const app: Application = e();
 export class Mongo {
@@ -50,7 +51,7 @@ app.post("/signin", (req: e.Request, res: e.Response) => {
    Users.SignUp(req, res);
 });
 
-app.listen(1996, function() {
+app.listen(port, function() {
    Mongo.Connect();
-   console.log('App listening on port 1996!');
+   console.log(`App listening on port ${port}!`);
 });
