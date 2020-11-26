@@ -6,15 +6,13 @@ import { Authorisation } from './methods/auth';
 import { Users } from './src/Users';
 import userRouter from './routes/users';
 import itemRouter from './routes/items';
-import credentials from './config';
 
 const cors = require('cors');
-const { database, password, username } = credentials;
 const port = process.env.PORT || 1996
 
 export const app: Application = e();
 export class Mongo {
-   static URI: string = `mongodb+srv://${username}:${password}@myfirstdatabase.l8kvg.mongodb.net/${database}?retryWrites=true&w=majority`;
+   static URI: string = "mongodb+srv://abhiramDB:abhiram13@myfirstdatabase.l8kvg.mongodb.net/Mordor?retryWrites=true&w=majority";;
    static client: MongoClient = new MongoClient(Mongo.URI, { useUnifiedTopology: true });   
    static async Connect(): Promise<void> {
       try {
@@ -55,10 +53,3 @@ app.listen(port, function() {
    Mongo.Connect();
    console.log(`App listening on port ${port}!`);
 });
-
-//"start": "tsc && node ./build/index.js"
-
-// "engines": {
-//    "node": "10.x",
-//       "npm": "6.x";
-// },

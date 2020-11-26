@@ -15,9 +15,9 @@
     "Node"
   ],
   "engines": {
-      "node": "10.x",
-      "npm": "6.x"
-   },
+    "node": "10.x",
+    "npm": "6.x"
+  },
   "author": "Abhiram Nagadi",
   "license": "ISC",
   "dependencies": {
