@@ -55,3 +55,10 @@ app.listen(port, function() {
    Mongo.Connect();
    console.log(`App listening on port ${port}!`);
 });
+
+//"start": "tsc && node ./build/index.js"
+
+// "engines": {
+//    "node": "10.x",
+//       "npm": "6.x";
+// },

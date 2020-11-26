@@ -7,12 +7,17 @@
   "scripts": {
     "tsc": "tsc",
     "node": "ts-node-dev --respawn --transpile-only index.ts",
-    "start": "tsc && node ./build/index.js"
+    "start": "tsc && node ./build/index.js",
+    "web": "node build/index.js"
   },
   "keywords": [
     "TypeScript",
     "Node"
   ],
+  "engines": {
+      "node": "10.x",
+      "npm": "6.x"
+   },
   "author": "Abhiram Nagadi",
   "license": "ISC",
   "dependencies": {
