@@ -26,7 +26,7 @@ itemRouter.get('/findone/:id', (req, res) => __awaiter(void 0, void 0, void 0, f
         new response_1.ServerResponse(item, res).Send();
     }
     catch (e) {
-        new response_1.ServerResponse(e, res).Send();
+        new response_1.ServerResponse(e, res, 400).Send();
     }
 }));
 itemRouter.post('/search', (req, res) => __awaiter(void 0, void 0, void 0, function* () {
@@ -35,7 +35,7 @@ itemRouter.post('/search', (req, res) => __awaiter(void 0, void 0, void 0, funct
         new response_1.ServerResponse(items, res).Send();
     }
     catch (e) {
-        new response_1.ServerResponse(e, res).Send();
+        new response_1.ServerResponse(e, res, 400).Send();
     }
 }));
 itemRouter.get('/findall', (req, res) => __awaiter(void 0, void 0, void 0, function* () {
@@ -44,7 +44,7 @@ itemRouter.get('/findall', (req, res) => __awaiter(void 0, void 0, void 0, funct
         new response_1.ServerResponse(items, res).Send();
     }
     catch (e) {
-        new response_1.ServerResponse(e, res).Send();
+        new response_1.ServerResponse(e, res, 400).Send();
     }
 }));
 itemRouter.post('/update', (req, res) => __awaiter(void 0, void 0, void 0, function* () {
@@ -55,11 +55,12 @@ itemRouter.post('/update', (req, res) => __awaiter(void 0, void 0, void 0, funct
         let name = {
             itemName: "Blue Milk"
         };
-        let count = yield database_1.Database("items", name).Update(id);
+        let count = yield database_1.Database("items", name)
+            .Update(id);
         new response_1.ServerResponse(count.modifiedCount, res).Send();
     }
     catch (e) {
-        new response_1.ServerResponse(e, res).Send();
+        new response_1.ServerResponse(e, res, 400).Send();
     }
 }));
 exports.default = itemRouter;

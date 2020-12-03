@@ -1,9 +1,7 @@
-import { Mongo, app } from '../index';
-import { Application } from "express";
+import { Mongo } from '../index';
 import e from "express";
 import { User, NewUser } from '../typedef/types';
-import { Collection, Cursor } from 'mongodb';
-import { json } from 'body-parser';
+import { Collection } from 'mongodb';
 import { TOKEN } from '../methods/token';
 
 export class Users {

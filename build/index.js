@@ -20,12 +20,11 @@ const auth_1 = require("./methods/auth");
 const Users_1 = require("./src/Users");
 const users_1 = __importDefault(require("./routes/users"));
 const items_1 = __importDefault(require("./routes/items"));
-const config_1 = __importDefault(require("./config"));
 const cors = require('cors');
-const { database, password, username } = config_1.default;
 const port = process.env.PORT || 1996;
 exports.app = express_1.default();
 class Mongo {
+    ;
     static Connect() {
         return __awaiter(this, void 0, void 0, function* () {
             try {
@@ -39,7 +38,7 @@ class Mongo {
     }
 }
 exports.Mongo = Mongo;
-Mongo.URI = `mongodb+srv://${username}:${password}@myfirstdatabase.l8kvg.mongodb.net/${database}?retryWrites=true&w=majority`;
+Mongo.URI = "mongodb+srv://abhiramDB:abhiram13@myfirstdatabase.l8kvg.mongodb.net/Mordor?retryWrites=true&w=majority";
 Mongo.client = new mongodb_1.MongoClient(Mongo.URI, { useUnifiedTopology: true });
 exports.app.use(body_parser_1.default.urlencoded({ extended: true }));
 exports.app.use(body_parser_1.default.json());
@@ -66,8 +65,3 @@ exports.app.listen(port, function () {
     Mongo.Connect();
     console.log(`App listening on port ${port}!`);
 });
-//"start": "tsc && node ./build/index.js"
-// "engines": {
-//    "node": "10.x",
-//       "npm": "6.x";
-// },

@@ -8,16 +8,16 @@ import userRouter from './routes/users';
 import itemRouter from './routes/items';
 
 const cors = require('cors');
-const port = process.env.PORT || 1996
+const port = process.env.PORT || 1996;
 
 export const app: Application = e();
 export class Mongo {
    static URI: string = "mongodb+srv://abhiramDB:abhiram13@myfirstdatabase.l8kvg.mongodb.net/Mordor?retryWrites=true&w=majority";;
-   static client: MongoClient = new MongoClient(Mongo.URI, { useUnifiedTopology: true });   
+   static client: MongoClient = new MongoClient(Mongo.URI, { useUnifiedTopology: true });
    static async Connect(): Promise<void> {
       try {
          await Mongo.client.connect();
-         Mongo.client.db("Mordor");         
+         Mongo.client.db("Mordor");
       } catch (e: any) {
          console.log(e.Message);
       }

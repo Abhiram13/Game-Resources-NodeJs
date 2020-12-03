@@ -6,16 +6,24 @@ import { ServerResponse } from '../methods/response';
 
 const itemRouter = express.Router();
 
+interface Obj {
+   itemName: string,
+}
+
+interface Query {
+   _id: ObjectID,
+}
+
 itemRouter.get('/findone/:id', async (req, res) => {
    const obj: ObjId = {
       _id: new ObjectID(req.params.id),
-   }
+   };
 
    try {
       let item: Items | null = await Database<Items, ObjId>("items", obj).FindById();
       new ServerResponse<Items | null>(item, res).Send();
    } catch (e) {
-      new ServerResponse<any>(e, res).Send();
+      new ServerResponse<any>(e, res, 400).Send();
    }
 });
 
@@ -24,7 +32,7 @@ itemRouter.post('/search', async (req, res) => {
       let items: Items[] = await Database<Items, string>("items", "itemName").Search(req);
       new ServerResponse<Items[]>(items, res).Send();
    } catch (e) {
-      new ServerResponse<any>(e, res).Send();
+      new ServerResponse<any>(e, res, 400).Send();
    }
 });
 
@@ -33,17 +41,9 @@ itemRouter.get('/findall', async (req, res) => {
       let items: Items[] = await Database<Items, string>("items", "").FindAll();
       new ServerResponse<Items[]>(items, res).Send();
    } catch (e: any) {
-      new ServerResponse<any>(e, res).Send();
+      new ServerResponse<any>(e, res, 400).Send();
    }
 });
-
-interface Obj {
-   itemName: string,
-}
-
-interface Query {
-   _id: ObjectID,
-}
 
 itemRouter.post('/update', async (req, res) => {
    try {
@@ -55,11 +55,12 @@ itemRouter.post('/update', async (req, res) => {
          itemName: "Blue Milk"
       };
 
-      let count = await Database<Items, Obj>("items", name).Update<Query>(id);
+      let count = await Database<Items, Obj>("items", name)
+         .Update<Query>(id);
 
       new ServerResponse<number>(count.modifiedCount, res).Send();
    } catch (e: any) {
-      new ServerResponse<any>(e, res).Send();
+      new ServerResponse<any>(e, res, 400).Send();
    }
 });
 
