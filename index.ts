@@ -6,18 +6,20 @@ import { Authorisation } from './methods/auth';
 import { Users } from './src/Users';
 import userRouter from './routes/users';
 import itemRouter from './routes/items';
+import config from './config';
 
 const cors = require('cors');
 const port = process.env.PORT || 1996;
+const { cluster, dbname, password, username } = config;
 
 export const app: Application = e();
 export class Mongo {
-   static URI: string = "mongodb+srv://abhiramDB:abhiram13@myfirstdatabase.l8kvg.mongodb.net/Mordor?retryWrites=true&w=majority";;
+   static URI: string = `mongodb+srv://${username}:${password}@myfirstdatabase.l8kvg.mongodb.net/${cluster}?retryWrites=true&w=majority`;
    static client: MongoClient = new MongoClient(Mongo.URI, { useUnifiedTopology: true });
    static async Connect(): Promise<void> {
       try {
          await Mongo.client.connect();
-         Mongo.client.db("Mordor");
+         Mongo.client.db(dbname);
       } catch (e: any) {
          console.log(e.Message);
       }
