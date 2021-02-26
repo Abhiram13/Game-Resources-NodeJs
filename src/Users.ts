@@ -3,6 +3,12 @@ import e from "express";
 import { User, NewUser } from '../typedef/types';
 import { Collection } from 'mongodb';
 import { TOKEN } from '../methods/token';
+import { ServerResponse } from '../methods/response';
+
+interface LoginResponse {
+   user: User;
+   token: string | null | undefined;
+}
 
 export class Users {   
    static Login(request: e.Request, response: e.Response): void {
@@ -10,15 +16,18 @@ export class Users {
          let collection: Collection<User> = Mongo?.client.db("Mordor").collection<User>("users");
 
          collection.findOne({ "username": request.body.username }, async function(err, doc: User) {
+            console.log(err);
+            console.log(doc);
             if (err || doc === null || doc === undefined || Object.keys(doc).length === 0) {
-               response.status(400).send({ "message": "No User Found" }).end();
+               new ServerResponse<string>("No User Found", response);
             } else if (doc) {
                TOKEN(`${doc.username}:${doc.password}`).Generate();
                let res = await TOKEN(`${doc.username}:${doc.password}`).FindToken();
-               response.status(200).send({ "user": doc, "token": res });
+               new ServerResponse<LoginResponse>({ "user": doc, "token": res }, response);
             }
          });
       } catch (e) {
+         console.log(e);
          response.status(500).send(e).end();
       }
    }

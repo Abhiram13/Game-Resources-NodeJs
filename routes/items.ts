@@ -21,27 +21,27 @@ itemRouter.get('/findone/:id', async (req, res) => {
 
    try {
       let item: Items | null = await Database<Items, ObjId>("items", obj).FindById();
-      new ServerResponse<Items | null>(item, res).Send();
+      new ServerResponse<Items | null>(item, res)
    } catch (e) {
-      new ServerResponse<any>(e, res, 400).Send();
+      new ServerResponse<any>(e, res, 400)
    }
 });
 
 itemRouter.post('/search', async (req, res) => {
    try {
       let items: Items[] = await Database<Items, string>("items", "itemName").Search(req);
-      new ServerResponse<Items[]>(items, res).Send();
+      new ServerResponse<Items[]>(items, res)
    } catch (e) {
-      new ServerResponse<any>(e, res, 400).Send();
+      new ServerResponse<any>(e, res, 400)
    }
 });
 
 itemRouter.get('/findall', async (req, res) => {
    try {
       let items: Items[] = await Database<Items, string>("items", "").FindAll();
-      new ServerResponse<Items[]>(items, res).Send();
+      new ServerResponse<Items[]>(items, res)
    } catch (e: any) {
-      new ServerResponse<any>(e, res, 400).Send();
+      new ServerResponse<any>(e, res, 400)
    }
 });
 
@@ -58,9 +58,9 @@ itemRouter.post('/update', async (req, res) => {
       let count = await Database<Items, Obj>("items", name)
          .Update<Query>(id);
 
-      new ServerResponse<number>(count.modifiedCount, res).Send();
+      new ServerResponse<number>(count.modifiedCount, res)
    } catch (e: any) {
-      new ServerResponse<any>(e, res, 400).Send();
+      new ServerResponse<any>(e, res, 400)
    }
 });
 
