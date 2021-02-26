@@ -4,15 +4,17 @@ import { User, NewUser } from '../typedef/types';
 import { Collection } from 'mongodb';
 import { TOKEN } from '../methods/token';
 
-export class Users {
+export class Users {   
    static Login(request: e.Request, response: e.Response): void {
       try {
-         Mongo.client.db("Mordor").collection<User>("users").findOne({ "username": request.body.username }, async function(err, doc) {
+         let collection: Collection<User> = Mongo?.client.db("Mordor").collection<User>("users");
+
+         collection.findOne({ "username": request.body.username }, async function(err, doc: User) {
             if (err || doc === null || doc === undefined || Object.keys(doc).length === 0) {
                response.status(400).send({ "message": "No User Found" }).end();
             } else if (doc) {
                TOKEN(`${doc.username}:${doc.password}`).Generate();
-               let res = await TOKEN(`${doc.username}:${doc.password}`).FindToken().then(resp => { return resp; });
+               let res = await TOKEN(`${doc.username}:${doc.password}`).FindToken();
                response.status(200).send({ "user": doc, "token": res });
             }
          });
