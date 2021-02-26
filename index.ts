@@ -4,8 +4,8 @@ import bodyparser from "body-parser";
 import { MongoClient } from "mongodb";
 import { Authorisation } from './methods/auth';
 import { Users } from './src/Users';
-import userRouter from './routes/users';
-import itemRouter from './routes/items';
+import userRouter from './routes/userRouter';
+import itemRouter from './routes/itemRouter';
 import config from './config';
 
 const cors = require('cors');
