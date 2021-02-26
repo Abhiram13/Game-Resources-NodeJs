@@ -16,8 +16,6 @@ export class Users {
          let collection: Collection<User> = Mongo?.client.db("Mordor").collection<User>("users");
 
          collection.findOne({ "username": request.body.username }, async function(err, doc: User) {
-            console.log(err);
-            console.log(doc);
             if (err || doc === null || doc === undefined || Object.keys(doc).length === 0) {
                new ServerResponse<string>("No User Found", response);
             } else if (doc) {
@@ -27,8 +25,7 @@ export class Users {
             }
          });
       } catch (e) {
-         console.log(e);
-         response.status(500).send(e).end();
+         new ServerResponse<any>(e, response, 500);
       }
    }
 
@@ -38,9 +35,9 @@ export class Users {
          collection.findOne({ "username": request.body.username }, function(err, doc) {
 
             if (doc && Object.keys(doc).length > 0) {
-               response.status(302).send("User already exist").end();
+               new ServerResponse<string>("User already Existed", response, 302);
             } else if (!("firstname" in request.body) || !("lastname" in request.body) || !("password" in request.body) || !("isAdmin" in request.body)) {
-               response.status(400).send("Bad Request").end();
+               new ServerResponse<string>("Bad Request", response, 400);
             } else if (doc === null || doc === undefined) {
                let obj: NewUser = {
                   username: request.body.username,
@@ -50,15 +47,11 @@ export class Users {
                   isAdmin: request.body.isAdmin,
                };
                collection.insertOne(obj);
-               response.status(200).end();
+               new ServerResponse<null>(null, response);
             }        
          });
       } catch (e) {
-         response.status(500).send(e).end();
+         new ServerResponse<any>(e, response, 500);
       }
-   }
-
-   static Like(): void {
-      
    }
 }

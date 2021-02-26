@@ -43,13 +43,9 @@ app.get("/", function(req: e.Request, res: e.Response) {
    res.send("Sent Data");
 });
 
-app.post("/login", (req: e.Request, res: e.Response) => {
-   Users.Login(req, res);
-});
+app.post("/login", Users.Login);
 
-app.post("/signin", (req: e.Request, res: e.Response) => {
-   Users.SignUp(req, res);
-});
+app.post("/signin", Users.SignUp);
 
 app.listen(port, function() {
    Mongo.Connect();
