@@ -40,6 +40,8 @@ app.use('/item', itemRouter);
 app.use('/users', userRouter);
 
 app.get("/", function(req: e.Request, res: e.Response) {
+   const headers = req.headers;
+   console.log(headers.host);
    res.send("Sent Data");
 });
 
