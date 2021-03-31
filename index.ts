@@ -39,17 +39,17 @@ app.all(["/item/*", "/users/*"], async function(req: e.Request, res: e.Response,
 app.use('/item', itemRouter);
 app.use('/users', userRouter);
 
-app.get("/", function(req: e.Request, res: e.Response) {
-   const headers = req.headers;
-   console.log(headers.host);
-   res.send("Sent Data");
+app.post("/", function(req: e.Request, res: e.Response) {
+   res.header("content-type", "application/text").send("Sent Data").end();
 });
 
 app.post("/login", Users.Login);
 
 app.post("/signin", Users.SignUp);
 
-app.listen(port, function() {
+function ServerStart(): void {
    Mongo.Connect();
    console.log(`App listening on port ${port}!`);
-});
+}
+
+app.listen(port, ServerStart).keepAliveTimeout = 200000;
