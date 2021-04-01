@@ -7,6 +7,7 @@ import { Users } from './src/Users';
 import userRouter from './routes/userRouter';
 import itemRouter from './routes/itemRouter';
 import config from './config';
+import http from "http";
 
 const cors = require('cors');
 const port = process.env.PORT || 1996;
@@ -52,4 +53,5 @@ function ServerStart(): void {
    console.log(`App listening on port ${port}!`);
 }
 
-app.listen(port, ServerStart).keepAliveTimeout = 200000;
+const server: http.Server = app.listen(port, ServerStart);
+server.timeout = 300000;
