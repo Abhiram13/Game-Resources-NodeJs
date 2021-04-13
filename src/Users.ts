@@ -21,7 +21,11 @@ export class Users {
             } else if (doc) {
                TOKEN(`${doc.username}:${doc.password}`).Generate();
                let res = await TOKEN(`${doc.username}:${doc.password}`).FindToken();
-               new ServerResponse<LoginResponse>({ "user": doc, "token": res }, response);
+               // new ServerResponse<LoginResponse>({ "user": doc, "token": res }, response);
+               response.status(200).cookie("token", res, {
+                  domain: "localhost",
+                  path: "/",               
+               }).send({"user": doc, "token": res}).end();
             }
          });
       } catch (e) {

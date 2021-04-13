@@ -12,7 +12,9 @@ export class Authorisation {
    static async Token(token: string | string[] | undefined): Promise<boolean> {
       if (!token) return false;
 
-      let document = await Mongo.client.db("Mordor").collection("tokens").findOne({ "Token": token });
+      let document = await Mongo.client.db("Mordor").collection("tokens").findOne({"Token": token});
+      
+      console.log(document);
 
       return (document && Object.keys(document).length > 0) ? true : false;
    }
