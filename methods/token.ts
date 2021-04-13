@@ -9,12 +9,17 @@ export let TOKEN = function (header: string): IToken {
 
    /** @private */
    let create = function(): string {
+      // let token: string = string.Encode(`
+      //    ${username}_
+      //    ${password}_
+      //    ${new Date().getHours()}_
+      //    ${new Date().getMinutes()}_
+      //    ${new Date().getSeconds()}
+      // `);
+
       let token: string = string.Encode(`
          ${username}_
          ${password}_
-         ${new Date().getHours()}_
-         ${new Date().getMinutes()}_
-         ${new Date().getSeconds()}
       `);
 
       return token;
@@ -30,6 +35,10 @@ export let TOKEN = function (header: string): IToken {
          let x: Token | null = await collection.findOne({ username: username });
          return x?.Token;
       },
+
+      Find: async function(): Promise<void> {
+        // 
+      },
       
       Generate: function(): void {
          let token: Token | null = null;
@@ -41,7 +50,7 @@ export let TOKEN = function (header: string): IToken {
 
          (async () => {
             let promise = new Promise((resolve, reject) => {
-               setTimeout(() => killToken(), 60000);
+               setTimeout(() => killToken(), 120000000);
             });
 
             await promise;

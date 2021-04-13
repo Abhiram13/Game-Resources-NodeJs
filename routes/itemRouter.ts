@@ -30,7 +30,12 @@ itemRouter.get('/findone/:id', async (req, res) => {
 itemRouter.post('/search', async (req, res) => {
    try {
       let items: Items[] = await Database<Items, string>("items", "itemName").Search(req);
-      new ServerResponse<Items[]>(items, res)
+      // new ServerResponse<Items[]>(items, res)
+      res
+         .status(200)
+         .cookie("thirdRequest", "asgdahgsdghsadvhasgdadhgasdhgasdgsaghd")
+         .send(items)
+         .end()
    } catch (e) {
       new ServerResponse<any>(e, res, 400)
    }
@@ -39,7 +44,12 @@ itemRouter.post('/search', async (req, res) => {
 itemRouter.get('/findall', async (req, res) => {
    try {
       let items: Items[] = await Database<Items, string>("items", "").FindAll();
-      new ServerResponse<Items[]>(items, res)
+      // new ServerResponse<Items[]>(items, res)
+      res
+         .status(200)
+         .cookie("secondRequest", "asgdahgsdghsadvhasgdadhgasdhgasdgsaghd")
+         .send(items)
+         .end()
    } catch (e: any) {
       new ServerResponse<any>(e, res, 400)
    }

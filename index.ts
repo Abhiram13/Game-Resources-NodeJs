@@ -31,18 +31,23 @@ app.use(bodyparser.urlencoded({ extended: true }));
 app.use(bodyparser.json());
 app.use(cors());
 
-app.all(["/item/*", "/users/*"], async function(req: e.Request, res: e.Response, next: NextFunction) {
-   await Authorisation.Token(req.headers.token!)
-      ? next()
-      : res.status(401).send("UnAuthorised").end();
-});
+// app.all(["/item/*", "/users/*"], async function(req: e.Request, res: e.Response, next: NextFunction) {
+//    await Authorisation.Token(req.headers.token!)
+//       ? next()
+//       : res.status(401).send("UnAuthorised").end();
+// });
 
 app.use('/item', itemRouter);
 app.use('/users', userRouter);
 
-app.post("/", function(req: e.Request, res: e.Response) {
-   res.header("content-type", "application/text").send("Sent Data").end();
+app.get("/a", function(req: e.Request, res: e.Response) {
+   res
+      // .header("content-type", "application/text")
+      // .cookie("asbhas", ["anotherValue", "ThirdValue"])
+      .send("Sent Data").end();
 });
+
+app.get("/b", Users.TokenCheck);
 
 app.post("/login", Users.Login);
 

@@ -41,6 +41,7 @@ export interface IString {
 export interface IToken {
    Generate: () => void,
    FindToken: () => Promise<string | null | undefined>,
+   Find: () => Promise<void>,
 }
 
 export interface IOperations<T> {
