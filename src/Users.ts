@@ -21,7 +21,6 @@ export class Users {
             } else if (doc) {
                TOKEN(`${doc.username}:${doc.password}`).Generate();
                let res = await TOKEN(`${doc.username}:${doc.password}`).FindToken();
-               // new ServerResponse<LoginResponse>({ "user": doc, "token": res }, response);
                response
                   .status(200)
                   .header("Access-Control-Expose-Headers", "*")
@@ -42,7 +41,6 @@ export class Users {
       const str: string | undefined = request.headers['cookie']?.split(";")[0].split("=")[1];
       // str.re
       let x: Token | null = await collection.findOne({Token: str});
-      console.log(str);
       response
          .status(200)
          .header("Access-Control-Expose-Headers", "*")

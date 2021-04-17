@@ -1,6 +1,6 @@
 import { Mongo } from "..";
 import { Token, IToken } from '../typedef/types';
-import { Collection } from "mongodb";
+import { Collection, ObjectID } from "mongodb";
 import { string } from './string';
 
 export let TOKEN = function (header: string): IToken {
@@ -25,10 +25,16 @@ export let TOKEN = function (header: string): IToken {
       return token;
    };
 
-   /** @private */
-   let killToken = function(): void {
-      collection.updateOne({ username: username }, { $set: { Token: null } }, { upsert: true });
-   };
+   const emptyToken: Token = {
+      Token: "",
+      _id: new ObjectID(),
+      password: "",
+      username: ""
+   }
+   
+   // let killToken = function(): void {
+   //    collection.updateOne({ username: username }, { $set: { Token: null } }, { upsert: true });
+   // };
 
    return {
       FindToken: async function(): Promise<string | null | undefined> {
@@ -40,21 +46,16 @@ export let TOKEN = function (header: string): IToken {
         // 
       },
       
-      Generate: function(): void {
-         let token: Token | null = null;
-         collection.findOne({ username: username }).then((response: Token | null) => { token = response; });
+      Generate: async function(): Promise<void> {
+         var token: Token = await collection.findOne({username: username}) || emptyToken;
+         // collection.findOne({username: username}).then((response: Token | null) => {
+         //    console.log(response);
+         //    token = response;
+         // });
 
-         token
+         token.Token
             ? collection.insertOne({ username: username, password: password, Token: create() })
             : collection.updateOne({ username: username, password: password }, { $set: { Token: create() } }, { upsert: true });
-
-         (async () => {
-            let promise = new Promise((resolve, reject) => {
-               setTimeout(() => killToken(), 120000000);
-            });
-
-            await promise;
-         })();
       }
    };
 };
