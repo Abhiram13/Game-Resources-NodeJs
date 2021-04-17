@@ -11,19 +11,19 @@ interface LoginResponse {
    token: string | null | undefined;
 }
 
-function Cookie(cookie: string): void {
+function Cookie(cookie: string): string {
    const cookies: string[] = cookie?.split(";") || [];
-   var selectedCookie: string;
-
-   console.log(cookies);
+   var encodedAuthentication: string = "";
 
    for (var i = 0; i < cookies.length; i++) {
       const [name, value] = cookies[i].split("=");
 
       if (name.trimStart() === "authToken") {
-         selectedCookie = value;
+         encodedAuthentication = value;
       }
    }
+
+   return encodedAuthentication || "";
 }
 
 interface LoginCredentials {
@@ -35,8 +35,9 @@ function createCookie(body: LoginCredentials): string {
    return string.Encode(`${body.username}:${body.password}`);
 }
 
-function decodeCookie(cookie: string): string {
-   return string.Decode(cookie);
+function decodeCookie(cookie: string): void {
+   console.log(Cookie(cookie));
+   // return string.Decode(cookie);
 }
 
 async function isCookieValid(request: e.Request, response: e.Response): Promise<void> {
@@ -62,7 +63,8 @@ export class Users {
          let collection: Collection<User> = Mongo?.client.db("Mordor").collection<User>("users");
 
          collection.findOne({"username": request.body.username}, async function(error, document: User) {
-            Cookie(request.headers['cookie'] || "");
+            // Cookie(request.headers['cookie'] || "");
+            decodeCookie(request.headers['cookie'] || "");
             if (error || !document || !document.username) {
                new ServerResponse<string>("No User Found", response);
             } else {
