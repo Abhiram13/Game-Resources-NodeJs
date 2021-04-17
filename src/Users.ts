@@ -1,10 +1,11 @@
 import {Mongo} from '../index';
 import e from "express";
-import {User, NewUser, IToken, Token} from '../typedef/types';
+import {User, NewUser, IToken, Token, LoginCredentials} from '../typedef/types';
 import {Collection, MongoError} from 'mongodb';
 import {TOKEN} from '../methods/token';
 import {ServerResponse} from '../methods/response';
 import {string} from '../methods/string';
+import Cookie from '../methods/cookie';
 
 interface LoginResponse {
    user: User;
@@ -24,11 +25,6 @@ function fetchCookieFromHeaders(cookie: string): string {
    }
 
    return encodedAuthentication || "";
-}
-
-interface LoginCredentials {
-   username: string;
-   password: string;
 }
 
 function createCookie(body: LoginCredentials): string {
@@ -67,7 +63,7 @@ export class Users {
                new ServerResponse<string>("No User Found", response);
                return;
             }
-            const cookieValue: string = createCookie(request.body as LoginCredentials);
+            const cookieValue: string = Cookie.create(request.body as LoginCredentials);
             response
                .status(200)
                .header("Access-Control-Expose-Headers", "*")

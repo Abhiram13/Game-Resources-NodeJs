@@ -53,3 +53,8 @@ export interface IOperations<T> {
 export type ObjId = {
    _id: ObjectID;
 }
+
+export interface LoginCredentials {
+   username: string;
+   password: string;
+}
