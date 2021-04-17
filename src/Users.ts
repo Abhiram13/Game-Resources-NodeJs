@@ -3,7 +3,8 @@ import e from "express";
 import { User, NewUser, IToken, Token } from '../typedef/types';
 import { Collection, MongoError } from 'mongodb';
 import { TOKEN } from '../methods/token';
-import { ServerResponse } from '../methods/response';
+import {ServerResponse} from '../methods/response';
+import {string} from '../methods/string';
 
 interface LoginResponse {
    user: User;
@@ -20,10 +21,40 @@ function Cookie(cookie: string): void {
       const [name, value] = cookies[i].split("=");
 
       if (name.trimStart() === "authToken") {
-         // selectedCookie = 
+         selectedCookie = value;
       }
    }
 }
+
+interface LoginCredentials {
+   username: string;
+   password: string;
+}
+
+function createCookie(body: LoginCredentials): string {
+   return string.Encode(`${body.username}:${body.password}`);
+}
+
+function decodeCookie(cookie: string): string {
+   return string.Decode(cookie);
+}
+
+async function isCookieValid(request: e.Request, response: e.Response): Promise<void> {
+   let collection: Collection<User> = Mongo?.client.db("Mordor").collection<User>("users");   
+}
+/**
+ * FISRT TIME LOGIN:::
+ * After login, create cookie based on user credentials and send it back through response
+ * Store that cookie and send it through request for all routes and check if the user is valid or not
+ * 
+ * NEXT TIME LOGIN:::
+ * Since cookies will be stored in browser memory, at login / first route in client browser, check if cookie exist and is valid
+ * if true, authenticate automatically
+ * if false, let user login and repeat FIRST TIME LOGIN process
+ * 
+ * LOGOUT:::
+ * Remove cookies
+ */
 
 export class Users {   
    static Login(request: e.Request, response: e.Response): void {
@@ -35,8 +66,7 @@ export class Users {
             if (error || !document || !document.username) {
                new ServerResponse<string>("No User Found", response);
             } else {
-               // console.log(request.headers);
-               TOKEN(`${document.username}:${document.password}`).Generate();
+               // TOKEN(`${document.username}:${document.password}`).Generate();
                let res = await TOKEN(`${document.username}:${document.password}`).FindToken();
                response
                   .status(200)
