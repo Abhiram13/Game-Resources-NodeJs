@@ -8,6 +8,7 @@ import userRouter from './routes/userRouter';
 import itemRouter from './routes/itemRouter';
 import config from './config';
 import http from "http";
+import Cookie from './methods/cookie';
 
 const cors = require('cors');
 const port = process.env.PORT || 1996;
@@ -47,7 +48,17 @@ app.get("/a", function(req: e.Request, res: e.Response) {
       .send("Sent Data").end();
 });
 
-app.get("/b", Users.TokenCheck);
+app.get("/checkToken", async function(req, res) {
+   const isCookieValid: boolean = await Cookie.isValid(req.headers);
+   const status: number = isCookieValid ? 202 : 511;
+   const message: string = isCookieValid ? "true" : "false";
+
+   res
+      .status(status)
+      .header("content-type", "application/text")
+      .send(message)
+      .end();
+});
 
 app.post("/login", Users.Login);
 
