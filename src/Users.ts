@@ -1,8 +1,8 @@
-import { Mongo } from '../index';
+import {Mongo} from '../index';
 import e from "express";
-import { User, NewUser, IToken, Token } from '../typedef/types';
-import { Collection, MongoError } from 'mongodb';
-import { TOKEN } from '../methods/token';
+import {User, NewUser, IToken, Token} from '../typedef/types';
+import {Collection, MongoError} from 'mongodb';
+import {TOKEN} from '../methods/token';
 import {ServerResponse} from '../methods/response';
 import {string} from '../methods/string';
 
@@ -11,7 +11,7 @@ interface LoginResponse {
    token: string | null | undefined;
 }
 
-function Cookie(cookie: string): string {
+function fetchCookieFromHeaders(cookie: string): string {
    const cookies: string[] = cookie?.split(";") || [];
    var encodedAuthentication: string = "";
 
@@ -36,12 +36,12 @@ function createCookie(body: LoginCredentials): string {
 }
 
 function decodeCookie(cookie: string): void {
-   console.log(Cookie(cookie));
+   console.log(fetchCookieFromHeaders(cookie));
    // return string.Decode(cookie);
 }
 
 async function isCookieValid(request: e.Request, response: e.Response): Promise<void> {
-   let collection: Collection<User> = Mongo?.client.db("Mordor").collection<User>("users");   
+   let collection: Collection<User> = Mongo?.client.db("Mordor").collection<User>("users");
 }
 /**
  * FISRT TIME LOGIN:::
@@ -57,28 +57,25 @@ async function isCookieValid(request: e.Request, response: e.Response): Promise<
  * Remove cookies
  */
 
-export class Users {   
+export class Users {
    static Login(request: e.Request, response: e.Response): void {
       try {
          let collection: Collection<User> = Mongo?.client.db("Mordor").collection<User>("users");
 
          collection.findOne({"username": request.body.username}, async function(error, document: User) {
-            // Cookie(request.headers['cookie'] || "");
-            decodeCookie(request.headers['cookie'] || "");
             if (error || !document || !document.username) {
                new ServerResponse<string>("No User Found", response);
-            } else {
-               // TOKEN(`${document.username}:${document.password}`).Generate();
-               let res = await TOKEN(`${document.username}:${document.password}`).FindToken();
-               response
-                  .status(200)
-                  .header("Access-Control-Expose-Headers", "*")
-                  .header("Access-Control-Allow-Credentials", "true")
-                  .header("content-type", "application/json")
-                  .cookie("authToken", res)
-                  .send({"user": document, "token": res})
-                  .end();
+               return;
             }
+            const cookieValue: string = createCookie(request.body as LoginCredentials);
+            response
+               .status(200)
+               .header("Access-Control-Expose-Headers", "*")
+               .header("Access-Control-Allow-Credentials", "true")
+               .header("content-type", "application/json")
+               .cookie("authToken", cookieValue)
+               .send({"user": document})
+               .end();
          });
       } catch (e) {
          new ServerResponse<any>(e, response, 500);
@@ -99,9 +96,9 @@ export class Users {
    }
 
    static SignUp(request: e.Request, response: e.Response): void {
-      try {         
+      try {
          let collection: Collection<User> = Mongo.client.db("Mordor").collection<User>("users");
-         collection.findOne({ "username": request.body.username }, function(err, doc) {
+         collection.findOne({"username": request.body.username}, function(err, doc) {
 
             if (doc && Object.keys(doc).length > 0) {
                new ServerResponse<string>("User already Existed", response, 302);
@@ -117,7 +114,7 @@ export class Users {
                };
                collection.insertOne(obj);
                new ServerResponse<null>(null, response);
-            }        
+            }
          });
       } catch (e) {
          new ServerResponse<any>(e, response, 500);
