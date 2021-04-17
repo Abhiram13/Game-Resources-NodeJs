@@ -1,10 +1,7 @@
 import {LoginCredentials} from '../typedef/types';
 import {Mongo} from '../index';
-import e from "express";
-import {User, NewUser, IToken, Token} from '../typedef/types';
-import {Collection, MongoError} from 'mongodb';
-import {TOKEN} from '../methods/token';
-import {ServerResponse} from '../methods/response';
+import {User} from '../typedef/types';
+import {Collection} from 'mongodb';
 import {string} from '../methods/string';
 import Http from 'http';
 

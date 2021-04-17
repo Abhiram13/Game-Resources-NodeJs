@@ -1,24 +1,9 @@
 import {Mongo} from '../index';
 import e from "express";
-import {User, NewUser, Token, LoginCredentials} from '../typedef/types';
-import {Collection, MongoError} from 'mongodb';
+import {User, NewUser, LoginCredentials} from '../typedef/types';
+import {Collection} from 'mongodb';
 import {ServerResponse} from '../methods/response';
-import {string} from '../methods/string';
 import Cookie from '../methods/cookie';
-
-/**
- * FISRT TIME LOGIN:::
- * After login, create cookie based on user credentials and send it back through response
- * Store that cookie and send it through request for all routes and check if the user is valid or not
- * 
- * NEXT TIME LOGIN:::
- * Since cookies will be stored in browser memory, at login / first route in client browser, check if cookie exist and is valid
- * if true, authenticate automatically
- * if false, let user login and repeat FIRST TIME LOGIN process
- * 
- * LOGOUT:::
- * Remove cookies
- */
 
 export class Users {
    static Login(request: e.Request, response: e.Response): void {
@@ -30,7 +15,7 @@ export class Users {
                new ServerResponse<string>("No User Found", response);
                return;
             }
-            
+
             const cookieValue: string = Cookie.create(request.body as LoginCredentials);
             response
                .status(200)

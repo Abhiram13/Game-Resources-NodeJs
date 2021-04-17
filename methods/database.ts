@@ -1,6 +1,6 @@
 import { Mongo } from "..";
 import { IOperations } from '../typedef/types';
-import { Collection, ObjectID, UpdateWriteOpResult } from "mongodb";
+import { Collection, UpdateWriteOpResult } from "mongodb";
 
 export function Database<T, O>(collection: string, options: O): IOperations<T> {
    let database: Collection<T> = Mongo.client.db("Mordor").collection<T>(collection);

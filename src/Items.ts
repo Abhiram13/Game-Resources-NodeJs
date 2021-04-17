@@ -1,7 +1,6 @@
-import {Mongo, app} from '../index';
-import {Application} from "express";
+import {Mongo} from '../index';
 import e from "express";
-import {Collection, Cursor, Db, MongoClient, ObjectID} from "mongodb";
+import {ObjectID} from "mongodb";
 import {Items} from '../typedef/types';
 
 export class Item {
