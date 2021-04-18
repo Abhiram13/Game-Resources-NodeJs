@@ -7,7 +7,7 @@ import userRouter from './routes/userRouter';
 import itemRouter from './routes/itemRouter';
 import config from './config';
 import http from "http";
-import Cookie from './methods/cookie';
+import Cookie, {DefaultUser} from './methods/cookie';
 import {User} from "./typedef/types";
 
 const cors = require('cors');
@@ -55,7 +55,15 @@ app.get("/checkToken", async function(req, res) {
 
 app.get("/fetchUserCookie", async function(req, res) {
    const user: User = await Cookie.findUser(req.headers);
-   const message: string = (user || Object.keys(user).length > 0) ? JSON.stringify(user) : "No User Found";
+   const isUser: boolean = !!user.username;
+   const message: string = isUser ? JSON.stringify(user) : JSON.stringify(new DefaultUser());
+   const status: number = isUser ? 302 : 404;
+
+   res
+      .status(200)
+      .header("content-type", "application/text")
+      .send({message, status})
+      .end();
 });
 
 app.post("/login", Users.Login);

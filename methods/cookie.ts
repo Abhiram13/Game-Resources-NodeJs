@@ -5,7 +5,7 @@ import {Collection} from 'mongodb';
 import {string} from '../methods/string';
 import Http from 'http';
 
-class DefaultUser implements User {
+export class DefaultUser implements User {
    firstname: string;
    isAdmin: boolean;
    lastname: string;
