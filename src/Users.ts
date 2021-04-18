@@ -8,7 +8,9 @@ import Cookie from '../methods/cookie';
 export class Users {
    static Login(request: e.Request, response: e.Response): void {
       try {
-         let collection: Collection<User> = Mongo?.client.db("Mordor").collection<User>("users");         
+         const collection: Collection<User> = Mongo?.client.db("Mordor").collection<User>("users");
+         
+         console.log(request.body);
 
          collection.findOne({"username": request.body.username}, async function(error, document: User) {
             if (error || !document || !document.username) {

@@ -8,6 +8,7 @@ import itemRouter from './routes/itemRouter';
 import config from './config';
 import http from "http";
 import Cookie from './methods/cookie';
+import {User} from "./typedef/types";
 
 const cors = require('cors');
 const port = process.env.PORT || 1996;
@@ -50,6 +51,11 @@ app.get("/checkToken", async function(req, res) {
       .header("content-type", "application/text")
       .send({message, status})
       .end();
+});
+
+app.get("/fetchUserCookie", async function(req, res) {
+   const user: User = await Cookie.findUser(req.headers);
+   const message: string = (user || Object.keys(user).length > 0) ? JSON.stringify(user) : "No User Found";
 });
 
 app.post("/login", Users.Login);
