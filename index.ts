@@ -46,9 +46,9 @@ app.get("/checkToken", async function(req, res) {
    const message: string = isCookieValid ? "true" : "false";
 
    res
-      .status(status)
+      .status(200)
       .header("content-type", "application/text")
-      .send(message)
+      .send({message, status})
       .end();
 });
 
