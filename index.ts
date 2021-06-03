@@ -41,12 +41,12 @@ app.all(["/item/*", "/users/*"], async function(req: e.Request, res: e.Response,
 app.use('/item', itemRouter);
 app.use('/users', userRouter);
 
-app.get("/checkToken", async function(req, res) {
+app.get("/checkToken", async function(req, response) {
    const isCookieValid: boolean = await Cookie.isValid(req.headers);
    const status: number = isCookieValid ? 202 : 511;
    const message: string = isCookieValid ? "true" : "false";
 
-   res
+   response
       .status(200)
       .header("content-type", "application/text")
       .send({message, status})
