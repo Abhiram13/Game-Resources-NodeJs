@@ -3,17 +3,13 @@ import { Database } from '../methods/database';
 import { Items, ObjId } from '../typedef/types';
 import { ObjectID } from "mongodb";
 import {ServerResponse} from '../methods/response';
-import {Worker, isMainThread, MessageChannel, MessagePort, parentPort} from 'worker_threads';
 
 const itemRouter = express.Router();
 
 interface Obj { itemName: string, }
 interface Query {_id: ObjectID, }
-interface IDemo { items: Items[] }
 
-var cacheObject: IDemo = {
-   items: [],
-};
+var cache = new Map();
 
 itemRouter.get('/findone/:id', async (req, res) => {
    const obj: ObjId = {
@@ -39,13 +35,12 @@ itemRouter.post('/search', async (req, res) => {
 
 itemRouter.get('/findall', async (req, res) => {   
    try {
-      console.log(cacheObject.items);
-      if (cacheObject.items.length === 0) {
-         const items: Items[] = await Database<Items, string>("items", "").FindAll();
-         cacheObject.items = items;
-         res.status(200).send(items).end();
+      if (cache.has("allItems")) {
+         res.status(200).send(cache.get("allItems")).end();
       } else {
-         res.status(200).send(cacheObject.items).end();
+         const items: Items[] = await Database<Items, string>("items", "").FindAll();
+         cache.set("allItems", items);
+         res.status(200).send(items).end();
       }
    } catch (e: any) {
       new ServerResponse<any>(e, res, 400)

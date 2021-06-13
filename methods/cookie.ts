@@ -69,8 +69,8 @@ export default class Cookie {
 
    static async isValid(headers: Http.IncomingHttpHeaders): Promise<boolean> {
       const token = this.fetchFromHeaders(headers);
-      const hasCookie = cookieCache.has(`user_${token}`) === false;
-      var USER: User = hasCookie ? await this.findUser(headers) : cookieCache.get(`user_${token}`);
+      const hasCookie: boolean = cookieCache.has(`user_${token}`);
+      var USER: User = hasCookie ? cookieCache.get(`user_${token}`) : await this.findUser(headers);
 
       return (!USER || !USER.username) ? false : true;
    }
