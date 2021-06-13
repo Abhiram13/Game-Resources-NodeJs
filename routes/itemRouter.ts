@@ -2,17 +2,18 @@ import express from "express";
 import { Database } from '../methods/database';
 import { Items, ObjId } from '../typedef/types';
 import { ObjectID } from "mongodb";
-import { ServerResponse } from '../methods/response';
+import {ServerResponse} from '../methods/response';
+import {Worker, isMainThread, MessageChannel, MessagePort, parentPort} from 'worker_threads';
 
 const itemRouter = express.Router();
 
-interface Obj {
-   itemName: string,
-}
+interface Obj { itemName: string, }
+interface Query {_id: ObjectID, }
+interface IDemo { items: Items[] }
 
-interface Query {
-   _id: ObjectID,
-}
+var cacheObject: IDemo = {
+   items: [],
+};
 
 itemRouter.get('/findone/:id', async (req, res) => {
    const obj: ObjId = {
@@ -36,10 +37,16 @@ itemRouter.post('/search', async (req, res) => {
    }
 });
 
-itemRouter.get('/findall', async (req, res) => {
+itemRouter.get('/findall', async (req, res) => {   
    try {
-      let items: Items[] = await Database<Items, string>("items", "").FindAll();   
-      res.status(200).send(items).end()
+      console.log(cacheObject.items);
+      if (cacheObject.items.length === 0) {
+         const items: Items[] = await Database<Items, string>("items", "").FindAll();
+         cacheObject.items = items;
+         res.status(200).send(items).end();
+      } else {
+         res.status(200).send(cacheObject.items).end();
+      }
    } catch (e: any) {
       new ServerResponse<any>(e, res, 400)
    }

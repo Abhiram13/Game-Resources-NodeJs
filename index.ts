@@ -9,6 +9,7 @@ import config from './config';
 import http from "http";
 import Cookie, {DefaultUser} from './methods/cookie';
 import {User} from "./typedef/types";
+import { Worker, isMainThread } from 'worker_threads';
 
 const cors = require('cors');
 const port = process.env.PORT || 1996;
