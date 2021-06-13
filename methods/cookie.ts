@@ -22,7 +22,18 @@ export class DefaultUser implements User {
    }
 }
 
+interface ICac {
+   user: User,
+   token: string
+}
+
+const cac: ICac = {
+   token: "",
+   user: new DefaultUser(),
+}
+
 export default class Cookie {
+   /** @private */
    static fetchFromHeaders(headers: Http.IncomingHttpHeaders): string {
       const cookie: string = headers.cookie || "";
       const cookies: string[] = cookie?.split(";") || [];
@@ -59,11 +70,19 @@ export default class Cookie {
       const collection: Collection<User> = Mongo?.client.db("Mordor").collection<User>("users");
       const USER: User = await collection.findOne({username: USER_CRED.username}) || new DefaultUser();
 
+      cac.token = COOKIE;
+      cac.user = USER;
+
       return USER;
    }
 
    static async isValid(headers: Http.IncomingHttpHeaders): Promise<boolean> {
-      const USER: User = await this.findUser(headers);
+      var USER: User = new DefaultUser();
+      if (cac.token === "" || cac.token !== this.fetchFromHeaders(headers)) {
+         USER = await this.findUser(headers);         
+      } else {
+         USER = cac.user;
+      }
 
       if (!USER || !USER.username) {
          return false;
