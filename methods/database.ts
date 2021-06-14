@@ -2,6 +2,23 @@ import { Mongo } from "..";
 import { IOperations } from '../typedef/types';
 import {Collection, UpdateWriteOpResult} from "mongodb";
 
+class FindAll<T> {
+   #collection: Collection<T>;
+   constructor(Collection: Collection<T>) {
+      this.#collection = Collection;
+   }
+
+   async run(): Promise<T[]> {
+      return await this.#collection.find({}).toArray();
+   }
+}
+
+export class DB<T> extends FindAll<T> {   
+   constructor(Name: string) {
+      super(Mongo.client.db("Mordor").collection<T>(Name));      
+   }
+}
+
 export function Database<T, O>(collection: string, options: O): IOperations<T> {
    let database: Collection<T> = Mongo.client.db("Mordor").collection<T>(collection);
 

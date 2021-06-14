@@ -1,5 +1,5 @@
 import express from "express";
-import { Database } from '../methods/database';
+import { Database, DB } from '../methods/database';
 import { Items, ObjId } from '../typedef/types';
 import { ObjectID } from "mongodb";
 import {ServerResponse} from '../methods/response';
@@ -33,26 +33,23 @@ itemRouter.post('/search', async (req, res) => {
    }
 });
 
-itemRouter.get('/findall', async (req, res) => {   
+itemRouter.get('/findall', async (req, res) => {
    try {
       if (cache.has("allItems")) {
          res.status(200).send(cache.get("allItems")).end();
       } else {
-         const items: Items[] = await Database<Items, string>("items", "").FindAll();
+         const items: Items[] = await new DB<Items>("items").run();
          cache.set("allItems", items);
          res.status(200).send(items).end();
       }
    } catch (e: any) {
-      new ServerResponse<any>(e, res, 400)
+      new ServerResponse<any>(e, res, 400);
    }
 });
 
 itemRouter.post('/update', async (req, res) => {
    try {
-      let id: Query = {
-         "_id": new ObjectID(req.body._id),
-      };
-
+      const id = { _id: new ObjectID(req.body._id) };
       let name: Obj = {
          itemName: "Blue Milk"
       };

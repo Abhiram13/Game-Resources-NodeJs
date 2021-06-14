@@ -10,8 +10,7 @@ export class Users {
       try {
          const collection: Collection<User> = Mongo?.client.db("Mordor").collection<User>("users");
 
-         collection.findOne({"username": request.body.username}, async function(error, document: User) {
-            console.log(document);
+         collection.findOne({"username": request.body.username}, async function(error, document: User) {            
             if (!document) {
                new ServerResponse<string>("No User Found", response);
                return;
@@ -33,7 +32,6 @@ export class Users {
       try {
          const collection: Collection<User> = Mongo.client.db("Mordor").collection<User>("users");
          collection.findOne({"username": request.body.username}, function(err, doc) {
-
             if (doc && Object.keys(doc).length > 0) {
                new ServerResponse<string>("User already Existed", response, 302);
             } else if (!("firstname" in request.body) || !("lastname" in request.body) || !("password" in request.body) || !("isAdmin" in request.body)) {
