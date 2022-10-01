@@ -5,23 +5,25 @@ import { MongoClient } from "mongodb";
 import { Users } from './src/Users';
 import userRouter from './routes/userRouter';
 import itemRouter from './routes/itemRouter';
-import config from './config';
+// import config from './config';
 import http from "http";
+import http2 from "http2";
 import Cookie, {DefaultUser} from './methods/cookie';
 import {User} from "./typedef/types";
 
 const cors = require('cors');
 const port = process.env.PORT || 1996;
-const { cluster, dbname, password, username } = config;
+// const { cluster, dbname, password, username } = config;
 
 export const app: Application = e();
 export class Mongo {
-   static URI: string = `mongodb+srv://${username}:${password}@myfirstdatabase.l8kvg.mongodb.net/${cluster}?retryWrites=true&w=majority`;
+   // static URI: string = `mongodb+srv://${username}:${password}@myfirstdatabase.l8kvg.mongodb.net/${cluster}?retryWrites=true&w=majority`;
+   static URI: string = `mongodb+srv://abhiramDB:abhiram13@cluster0.aowix.mongodb.net/Models?retryWrites=true&w=majority`;
    static client: MongoClient = new MongoClient(Mongo.URI, { useUnifiedTopology: true });
    static async Connect(): Promise<void> {
       try {
          await Mongo.client.connect();
-         Mongo.client.db(dbname);
+         Mongo.client.db("Models");
       } catch (e: any) {
          console.log(e.Message);
       }
@@ -75,5 +77,6 @@ function ServerStart(): void {
    console.log(`App listening on port ${port}!`);
 }
 
-const server: http.Server = app.listen(port, ServerStart);
-server.timeout = 300000;
+// const server: http.Server = app.listen(port, ServerStart);
+const server: http2.Http2Server = http2.createServer().listen(port, ServerStart);
+// server.timeout = 300000;
